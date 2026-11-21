@@ -1,0 +1,1793 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="sshvps" name="curso"/>
+<title>SSH e Chaves SSH: acesse sua VPS sem depender de suporte · INEMA.CLUB PRO</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&amp;family=Inter:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="assets/aula.css" rel="stylesheet"/>
+<script>(function(){try{var m=document.querySelector('meta[name=curso]');var CK=(m&&m.content)||'v5:curso';var s=JSON.parse(localStorage.getItem(CK));if(s&&s.prefs&&s.prefs.theme)document.documentElement.setAttribute('data-theme',s.prefs.theme);}catch(e){}})();</script>
+<!--
+  PROTOCOLO DE DESCOBERTA (formato-curso-v5, Passo 0 — bloqueante, registrado como metadado):
+  - Público específico: pessoas em geral, de jovens a 40+, sem conhecimento técnico prévio, que já rodam uma automação (ex.: n8n) numa VPS e às vezes precisam mexer nela sem esperar suporte.
+  - Profissões-alvo (≥2): Marta, dona de salão de beleza (automação de confirmação de horário por WhatsApp rodando numa VPS) · Ricardo, dono de loja de roupas (automação que posta novidades de coleção, também numa VPS).
+  - Familiaridade com tecnologia: nenhuma — nunca abriram um terminal antes desta trilha.
+  - Resultado prático esperado: conectar na própria VPS pelo terminal do Windows, criar e usar uma chave SSH, colocar a chave na VPS e resolver sozinho os erros de conexão mais comuns, sem depender de suporte técnico.
+  - Tempo por sessão: 15–20 minutos.
+  Decisão de processo registrada: o assunto desta trilha É o uso do terminal/SSH — por isso "terminal", "servidor", "diretório" etc. são tratados como jargão de DOMÍNIO deste curso específico (definidos inline + .gterm), não como jargão de plataforma a eliminar. Pelo mesmo motivo, a prática usa o modo "codigo" (herança v4, permitida em cursos técnicos) na maioria das aulas — é a própria habilidade sendo ensinada — variando para o modo "analise" nas duas aulas que são puramente conceituais/diagnósticas (aula 1 e aula 9).
+-->
+<style>
+  .view{display:none}.view.active{display:block}
+  .lnav{max-width:1160px;margin:0 auto;padding:0 clamp(24px,5vw,60px);display:flex;justify-content:space-between;gap:12px}
+  .lnav a{font-family:var(--mono);font-size:12px;color:var(--muted);text-decoration:none;border:1px solid var(--line2);border-radius:12px;padding:12px 16px}
+  .lnav a:hover{border-color:var(--accent);color:var(--ink)}
+  #v-trilha .wrap{max-width:1080px;margin:0 auto;padding:0 clamp(24px,5vw,60px)}
+  #v-trilha .t-hero{position:relative;overflow:hidden;padding:20vh 0 8vh;border-bottom:1px solid var(--line)}
+  #v-trilha h1{font-family:var(--serif);font-weight:500;font-size:clamp(40px,6.4vw,72px);line-height:1;letter-spacing:-.025em;margin:0 0 22px}
+  #v-trilha h1 em{font-style:italic;color:var(--accent)}
+  #v-trilha .lead{font-family:var(--serif);font-size:clamp(19px,2.1vw,24px);line-height:1.5;color:var(--ink-soft);max-width:50ch;margin:0 0 30px}
+  #v-trilha section{padding:8vh 0}
+  #v-trilha .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
+  #v-trilha h2{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(26px,3.6vw,38px);margin:0 0 28px}
+  #v-trilha .aulas{display:grid;gap:14px}
+  #v-trilha .au{display:grid;grid-template-columns:56px 1fr auto;gap:20px;align-items:center;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 24px}
+  #v-trilha .au .num{font-family:var(--serif);font-size:30px;color:var(--accent);text-align:center}
+  #v-trilha .au h3{font-family:var(--serif);font-weight:500;font-size:21px;margin:0 0 5px}
+  #v-trilha .au p{margin:0;color:var(--muted);font-size:14.5px}
+  #v-trilha .au .meta{font-family:var(--mono);font-size:11px;color:var(--accent);white-space:nowrap;text-align:right}
+  #v-trilha .au .prog{position:static;margin-top:10px;height:5px;border-radius:99px;background:var(--line);overflow:hidden;max-width:220px;width:auto}
+  #v-trilha .au .prog i{display:block;height:100%;width:100%;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .5s}
+  #v-trilha footer{max-width:1080px;margin:0 auto;padding:6vh clamp(24px,5vw,60px) 12vh;color:var(--faint);text-align:center;font-family:var(--serif);font-style:italic;border-top:1px solid var(--line)}
+</style>
+<link href="https://inematds.github.io/ssh-basico/curso.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/ssh-basico/en/curso.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/ssh-basico/es/curso.html" hreflang="es" rel="alternate"/></head>
+<body><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="curso.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">PT</a><a href="en/curso.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">EN</a><a href="es/curso.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">ES</a></div>
+<div class="bar"><div class="bar-inner">
+<span class="brand"><a class="mark" href="https://inema.club" rel="noopener" target="_blank">INEMA.CLUB</a><a class="pro" href="https://inema.pro" rel="noopener" target="_blank">PRO</a><a class="course" href="landing.html">SSH e Chaves SSH</a></span>
+<a class="back" href="#trilha" style="display:none">← trilha</a>
+<button class="pill" id="pill" style="display:none">0 lido</button>
+<button id="revbtn">revisar <span id="revn">0</span></button>
+<button id="exbtn">exercícios</button>
+<button id="jorbtn">jornada</button>
+<button aria-label="Como funciona" id="helpbtn">?</button>
+<button aria-label="Preferências de leitura" id="prefsbtn">Aa</button>
+<button id="themebtn">tema: escuro</button>
+</div></div>
+<!-- ===== TRILHA ===== -->
+<section class="view" id="v-trilha">
+<header class="t-hero"><div class="wrap">
+<p class="kicker">Trilha · SSH e VPS</p>
+<h1>Sua <em>porta de entrada</em><br/>pra própria VPS</h1>
+<p class="lead">Nove aulas curtas pra você conectar na sua VPS pelo terminal, entender as chaves SSH e resolver sozinho os travamentos mais comuns — sem esperar suporte técnico pra cada ajuste.</p>
+</div></header>
+<section><div class="wrap">
+<div class="statcards"></div>
+<p class="eyebrow">Aulas</p>
+<h2>Do primeiro acesso ao atalho pronto</h2>
+<div class="aulas">
+<a class="au on" data-aula="1" href="#aula-1">
+<div class="num">1</div>
+<div><h3>O que é SSH (e por que isso é seu, não só do seu técnico)</h3><p>Entenda o que acontece numa conexão remota e reconheça os 4 elementos que ela sempre precisa.</p><div class="prog"><i></i></div></div>
+<div class="meta">16 min · abrir →</div>
+</a>
+<a class="au" data-aula="2" href="#aula-2">
+<div class="num">2</div>
+<div><h3>Preparando o computador e a primeira conexão</h3><p>Confira se o SSH já está no seu Windows e entre na sua VPS pela primeira vez, com senha.</p><div class="prog"><i></i></div></div>
+<div class="meta">18 min · abrir →</div>
+</a>
+<a class="au" data-aula="3" href="#aula-3">
+<div class="num">3</div>
+<div><h3>Andando dentro do servidor</h3><p>Os comandos do dia a dia pra se localizar, mexer em pastas e sair com segurança.</p><div class="prog"><i></i></div></div>
+<div class="meta">17 min · abrir →</div>
+</a>
+<a class="au" data-aula="4" href="#aula-4">
+<div class="num">4</div>
+<div><h3>Entendendo suas chaves SSH</h3><p>Por que existem duas metades de uma chave, onde elas moram e a regra de ouro que nunca se quebra.</p><div class="prog"><i></i></div></div>
+<div class="meta">18 min · abrir →</div>
+</a>
+<a class="au" data-aula="5" href="#aula-5">
+<div class="num">5</div>
+<div><h3>CMD ou PowerShell? Reconhecendo onde você está</h3><p>O erro mais comum de quem copia comando de um lugar errado — e como nunca mais cair nele.</p><div class="prog"><i></i></div></div>
+<div class="meta">16 min · abrir →</div>
+</a>
+<a class="au" data-aula="6" href="#aula-6">
+<div class="num">6</div>
+<div><h3>Criando sua própria chave SSH</h3><p>O passo a passo pra gerar uma chave nova, sua, em vez de depender só de senha.</p><div class="prog"><i></i></div></div>
+<div class="meta">19 min · abrir →</div>
+</a>
+<a class="au" data-aula="7" href="#aula-7">
+<div class="num">7</div>
+<div><h3>Colocando sua chave na VPS, passo a passo</h3><p>A sequência completa — da chave no seu PC até conectar sem digitar senha nunca mais.</p><div class="prog"><i></i></div></div>
+<div class="meta">21 min · abrir →</div>
+</a>
+<a class="au" data-aula="8" href="#aula-8">
+<div class="num">8</div>
+<div><h3>Atalhos com o arquivo config</h3><p>Pare de digitar IP e caminho de chave toda vez — conecte só com um apelido.</p><div class="prog"><i></i></div></div>
+<div class="meta">16 min · abrir →</div>
+</a>
+<a class="au" data-aula="9" href="#aula-9">
+<div class="num">9</div>
+<div><h3>Resolvendo os erros mais comuns</h3><p>"Permission denied", conexão recusada, chave antiga — o diagnóstico de cada um.</p><div class="prog"><i></i></div></div>
+<div class="meta">19 min · abrir →</div>
+</a>
+</div>
+</div></section>
+<footer><div class="wrap">SSH e Chaves SSH · INEMA.CLUB PRO</div></footer>
+</section>
+<!-- ============================================================ -->
+<!-- ===== AULA 1 — FUNDAMENTO ===== -->
+<!-- ============================================================ -->
+<section class="view" data-aula="1" data-tempo="16min" id="v-aula-1">
+<header class="hero"><div class="hero-inner">
+<div>
+<p class="kicker">Trilha · Aula 1</p>
+<h1>O que é <em>SSH</em></h1>
+<p class="promise">Ao fim desta aula você reconhece, em qualquer comando de conexão remota, os 4 elementos que ele sempre precisa ter — sem decorar nenhum código.</p>
+<p class="why">Hoje, quando algo trava na automação que roda na sua VPS, você depende de mandar mensagem pro suporte e esperar. As próximas aulas resolvem isso — mas antes, você precisa entender o que está de fato acontecendo quando alguém "entra" num servidor. Sem essa base, qualquer comando vira decoreba.</p>
+<p class="cue"><span class="arw">↓</span> role para estudar</p>
+</div>
+<div class="herofig"><svg aria-hidden="true" fill="none" viewbox="0 0 300 240">
+<rect height="100" rx="10" stroke-width="2" style="stroke:var(--ink-soft)" width="70" x="20" y="70"></rect>
+<rect height="140" rx="10" stroke-width="2" style="stroke:var(--accent)" width="70" x="210" y="50"></rect>
+<path d="M92 120 L208 120" stroke-dasharray="6 6" stroke-width="2" style="stroke:var(--accent)"></path>
+<path d="M190 112 L208 120 L190 128" fill="none" stroke-width="2" style="stroke:var(--accent)"></path>
+<circle cx="55" cy="90" r="6" stroke-width="2" style="stroke:var(--ink-soft)"></circle>
+<circle cx="245" cy="72" r="6" stroke-width="2" style="stroke:var(--accent)"></circle>
+<text font-size="11" style="fill:var(--muted)" x="30" y="185">seu computador</text>
+<text font-size="11" style="fill:var(--muted)" x="215" y="205">sua VPS</text>
+</svg></div>
+</div></header>
+<div class="layout">
+<div class="col">
+<section class="step" data-fig="1" data-kind="fundamento">
+<h2><span class="n">01</span> O corredor privado até a sua VPS</h2>
+<p>Uma <span class="gterm" data-def="Sigla de Secure Shell: um jeito seguro de você mandar comandos de um computador para outro, à distância, como se estivesse na frente dele." tabindex="0">VPS</span> é um computador que fica ligado 24 horas num data center, rodando a automação do seu negócio. O <span class="gterm" data-def="Protocolo que abre um corredor privado e criptografado entre o seu computador e a VPS: tudo que você digita vale como se estivesse na frente dela." tabindex="0">SSH</span> é o corredor privado que liga o seu computador direto a esse servidor — sem precisar viajar até o data center.</p>
+<p>Depois que Marta, dona de salão de beleza, conecta por SSH na VPS onde roda a confirmação automática de horários por WhatsApp, tudo que ela digita passa a rodar lá dentro, não mais no notebook dela.</p>
+<button class="readbtn" data-read="s1">marcar como lido</button>
+</section>
+<section class="step" data-fig="2" data-kind="fundamento">
+<h2><span class="n">02</span> Pra que esse corredor serve, na prática</h2>
+<p>Com SSH você entra na VPS e resolve, com as próprias mãos, o que hoje pede suporte: reiniciar um serviço travado, olhar por que uma mensagem não saiu, ajustar um arquivo, ou só confirmar que está tudo funcionando.</p>
+<p>Ricardo, dono de loja de roupas, usa uma automação que posta as novidades de coleção sozinha. Quando ela para de postar, é o SSH que deixa ele entrar na VPS e ver o que aconteceu, no mesmo minuto — em vez de esperar alguém disponível.</p>
+<div class="qanchor">Você não precisa entender o servidor inteiro — só precisa saber abrir a porta certa quando for necessário.</div>
+<div class="mobfig" data-mobfig="2"></div>
+<button class="readbtn" data-read="s2">marcar como lido</button>
+</section>
+<section class="step" data-fig="3" data-kind="fundamento">
+<h2><span class="n">03</span> Os 4 elementos de toda conexão</h2>
+<p>Toda conexão por SSH — a de Marta, a de Ricardo, a de qualquer pessoa — depende sempre dos mesmos 4 elementos, nunca mais nem menos:</p>
+<ul>
+<li><b>O cliente SSH</b> — o programa no seu próprio computador que inicia a conversa.</li>
+<li><b>O servidor SSH</b> — o serviço que fica ligado dentro da VPS, esperando alguém bater.</li>
+<li><b>O IP da VPS</b> — o endereço público que diz onde ela está, como um número de casa.</li>
+<li><b>A <span class="gterm" data-def="Confirmar que é você mesmo tentando entrar — pode ser por senha ou por uma chave SSH, que a aula 4 explica em detalhe." tabindex="0">autenticação</span></b> — senha ou chave, a prova de que é você mesmo entrando.</li>
+</ul>
+<div class="quiz" data-answer="b">
+<p class="qk">Teste-se</p><p class="q">Se você troca de VPS (por exemplo, a Hostinger em vez da AWS), qual dos 4 elementos muda?</p>
+<button class="opt" data-k="a">O cliente SSH do seu computador.</button>
+<button class="opt" data-fb="O IP é o endereço daquela VPS específica — muda de servidor pra servidor, mesmo que o resto (cliente, protocolo, jeito de autenticar) continue igual." data-k="b">O IP da VPS.</button>
+<button class="opt" data-k="c">O que é autenticação.</button>
+<p class="qfb"></p>
+</div>
+<button class="readbtn" data-read="s3">marcar como lido</button>
+</section>
+<section class="step" data-fig="4" data-kind="fundamento">
+<h2><span class="n">04</span> O que muda quando você entende isso</h2>
+<p>Um comando de conexão parece uma fileira de símbolos estranhos na primeira vez. Depois desta aula, ele vira só isto: cliente, servidor, IP e autenticação, numa ordem fixa — nada além disso.</p>
+<p>Marta olhava para <code>ssh root@123.123.123.123</code> como um enigma. Hoje ela sabe: é o cliente dela (o <code>ssh</code>) autenticando um usuário (<code>root</code>) num endereço (<code>123.123.123.123</code>) — os 4 elementos, na mesma ordem de sempre.</p>
+<div class="qbefore-after">
+<div class="qba-col"><p class="qk">Antes</p><p>Um comando de conexão era um bloco de texto pra copiar sem entender, torcendo pra funcionar.</p></div>
+<div class="qba-col"><p class="qk">Depois</p><p>O mesmo comando vira 4 peças reconhecíveis — e você sabe qual delas ajustar quando algo muda.</p></div>
+</div>
+<div class="mobfig" data-mobfig="4"></div>
+<button class="readbtn" data-read="s4">marcar como lido</button>
+</section>
+<section class="practice" data-mode="analise" data-practice="p1">
+<p class="pk">Pratique agora <span class="pcount">0/2 feito</span></p>
+<h3 class="ph">Identifique os 4 elementos num caso real</h3>
+<p class="pgoal">Ler o mini-caso abaixo e apontar os 4 elementos — ~8 min.</p>
+<p class="psafe">Não existe nada pra quebrar aqui: é só leitura e raciocínio, sem tocar em nenhuma VPS de verdade.</p>
+<div class="qapply">
+<p class="qk">Mini-caso</p>
+<p>Marta quer entrar na VPS onde roda sua automação de WhatsApp. Ela abre o terminal do próprio notebook e digita <code>ssh admin@45.77.12.9</code>. Aparece um aviso pedindo a senha; ela digita e entra. Ricardo, na loja de roupas, faz o mesmo, só que na VPS dele o endereço é outro e o usuário também.</p>
+</div>
+<ol class="psteps">
+<li><label><input data-ptask="1" type="checkbox"/> Aponte, no comando de Marta, qual parte é o IP e qual é o usuário.</label></li>
+<li><label><input data-ptask="2" type="checkbox"/> Explique, com suas palavras, por que o comando de Ricardo tem os mesmos 4 elementos mesmo sendo uma VPS diferente.</label></li>
+</ol>
+<details><summary>ver resposta comentada</summary>
+<p><b>IP:</b> <code>45.77.12.9</code> — o endereço da VPS de Marta. <b>Usuário:</b> <code>admin</code> — quem está autenticando. O cliente é o terminal do notebook dela; o servidor é o serviço SSH ligado dentro da VPS. No caso de Ricardo, IP e usuário mudam porque são de outra VPS — mas os 4 papéis (cliente, servidor, IP, autenticação) continuam os mesmos, porque é assim que o SSH funciona sempre.</p>
+</details>
+<p class="pdone">Você acabou de conseguir reconhecer os 4 elementos de qualquer conexão SSH — a base que todas as próximas aulas usam.</p>
+</section>
+</div>
+<aside class="rail"><div class="railsticky">
+<div class="figstage">
+<div class="fig on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; seu computador manda um pedido pelo corredor SSH até a VPS ligada 24h" data-fig="1"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="90" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="60" x="18" y="70"></rect>
+<rect height="120" rx="8" stroke-width="2" style="stroke:var(--accent)" width="55" x="150" y="50"></rect>
+<path d="M80 115 L148 115" stroke-dasharray="5 5" stroke-width="2" style="stroke:var(--accent)"></path>
+<path d="M135 108 L148 115 L135 122" fill="none" stroke-width="2" style="stroke:var(--accent)"></path>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; a mesma VPS resolve várias tarefas: reiniciar, ler logs, ajustar arquivos" data-fig="2"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="140" rx="8" stroke-width="2" style="stroke:var(--accent)" width="60" x="80" y="30"></rect>
+<path d="M80 60 L30 60 M80 100 L30 100 M80 140 L30 140" stroke-width="2" style="stroke:var(--ink-soft)"></path>
+<circle cx="24" cy="60" r="5" stroke-width="2" style="stroke:var(--ink-soft)"></circle>
+<circle cx="24" cy="100" r="5" stroke-width="2" style="stroke:var(--ink-soft)"></circle>
+<circle cx="24" cy="140" r="5" stroke-width="2" style="stroke:var(--ink-soft)"></circle>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; os 4 elementos: cliente, servidor, IP e autenticação, sempre juntos" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="40" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="85" x="15" y="20"></rect>
+<rect height="40" rx="8" stroke-width="2" style="stroke:var(--accent)" width="85" x="120" y="20"></rect>
+<rect height="40" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="85" x="15" y="140"></rect>
+<rect height="40" rx="8" stroke-width="2" style="stroke:var(--accent)" width="85" x="120" y="140"></rect>
+<text font-size="10" style="fill:var(--ink-soft)" x="26" y="44">cliente</text>
+<text font-size="10" style="fill:var(--accent)" x="140" y="44">servidor</text>
+<text font-size="10" style="fill:var(--ink-soft)" x="42" y="164">IP</text>
+<text font-size="10" style="fill:var(--accent)" x="130" y="164">autenticação</text>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; o mesmo comando, decomposto nas 4 partes reconhecíveis" data-fig="4"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="30" rx="8" stroke-width="2" style="stroke:var(--accent)" width="200" x="10" y="85"></rect>
+<path d="M35 115 L35 150 M85 115 L85 150 M135 115 L135 150 M180 115 L180 150" stroke-dasharray="3 4" stroke-width="1.5" style="stroke:var(--ink-soft)"></path>
+</svg></div>
+</div>
+<p class="railcap"></p>
+<div class="steps-ind"></div>
+<p class="sidenote">Grife qualquer trecho para virar um cartão de revisão.</p>
+</div></aside>
+</div>
+<div class="fecho-wrap">
+<div class="recap-autor">
+<p class="rak">Resumo</p>
+<ul>
+<li>SSH é o corredor privado que liga seu computador direto a uma VPS ligada 24 horas.</li>
+<li>Toda conexão depende sempre dos mesmos 4 elementos: cliente, servidor, IP e autenticação.</li>
+<li>Entender esses 4 elementos transforma um comando de conexão de "enigma" em algo reconhecível.</li>
+</ul>
+</div>
+<div class="next-action">
+<p class="nak">Seu próximo passo</p>
+<p class="na-win">Você acabou de conseguir decompor qualquer comando de conexão SSH nos seus 4 elementos.</p>
+<p class="na-action">Nos próximos 15 minutos: abra o comando de conexão da sua própria VPS (se já tiver um salvo em algum lugar) e aponte, sozinho, qual parte é o IP e qual é o usuário.</p>
+<p class="na-hook">Na próxima aula, você confere se o SSH já está pronto no seu Windows e faz sua primeira conexão de verdade.</p>
+</div>
+</div>
+<nav class="lnav"><a href="#trilha">← trilha</a><a href="#aula-2">próxima: preparar o computador →</a></nav>
+<footer>Aula 1 · SSH e Chaves SSH · INEMA.CLUB PRO</footer>
+1"&gt;
+[
+  {"front":"Quais são os 4 elementos que toda conexão SSH precisa ter?","back":"Cliente SSH, servidor SSH, IP da VPS e autenticação (senha ou chave)."},
+  {"front":"Você troca sua VPS da Hostinger pra AWS. O que muda nos 4 elementos, e o que continua igual?","back":"O IP muda (é outro servidor); o cliente, o protocolo e o jeito de autenticar continuam iguais."},
+  {"front":"Qual a diferença entre o 'cliente SSH' e o 'servidor SSH'?","back":"O cliente é o programa no seu computador que inicia a conexão; o servidor é o serviço dentro da VPS que espera e responde."},
+  {"front":"Marta recebe um aviso pedindo senha ao tentar conectar. A qual dos 4 elementos esse aviso pertence?","back":"À autenticação — a prova de que é ela mesma entrando."}
+]
+
+<!-- COMPLETUDE aula-1 | tipo=FUNDAMENTO | steps=4
+  [OK] promise            .promise no cold-open (1)
+  [OK] why                .why após a promessa (1)
+  [OK] tempo              data-tempo no view + render no cold-open (1)
+  [OK] exemplo-profissao  exemplo aplicado em 100% dos steps (4/4)
+  [OK] apoio-visual       figura conceitual legendada em 100% dos steps (4/4)
+  [OK] practice           .practice[data-mode] (exatamente 1)
+  [OK] psafe              .psafe dentro da prática (1)
+  [OK] pgoal-tempo        .pgoal com tempo declarado (1)
+  [OK] recap-autor        .recap-autor no fecho (1)
+  [OK] next-action        .next-action no fecho (1)
+  [OK] cards              <script id="cards-1"> presente (1)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
+  [OK] teste-se-FUND      tipo=FUNDAMENTO: presente (1 quiz data-fb)
+-->
+</section>
+<!-- ============================================================ -->
+<!-- ===== AULA 2 — FERRAMENTA ===== -->
+<!-- ============================================================ -->
+<section class="view" data-aula="2" data-tempo="18min" id="v-aula-2">
+<header class="hero"><div class="hero-inner">
+<div>
+<p class="kicker">Trilha · Aula 2</p>
+<h1>Preparando o computador<br/>e a <em>primeira conexão</em></h1>
+<p class="promise">Ao fim desta aula você confere se o SSH já está pronto no seu Windows e conecta na sua própria VPS pela primeira vez, usando senha.</p>
+<p class="why">Toda a teoria da aula 1 só vira útil quando você abre o corredor de verdade, uma vez. É a diferença entre saber o que é uma chave de carro e sentar no banco do motorista.</p>
+<p class="cue"><span class="arw">↓</span> role para estudar</p>
+</div>
+<div class="herofig"><svg aria-hidden="true" fill="none" viewbox="0 0 300 240">
+<rect height="120" rx="14" stroke-width="2" style="stroke:var(--ink-soft)" width="180" x="60" y="40"></rect>
+<rect height="70" rx="6" stroke-width="2" style="stroke:var(--accent)" width="140" x="80" y="60"></rect>
+<path d="M100 170 L100 190 M200 170 L200 190" stroke-width="2" style="stroke:var(--ink-soft)"></path>
+<text font-size="11" style="fill:var(--muted)" x="95" y="205">terminal aberto</text>
+</svg></div>
+</div></header>
+<div class="layout">
+<div class="col">
+<section class="step" data-fig="1" data-kind="ferramenta" data-versao="Windows 10/11, jul/2026">
+<h2><span class="n">01</span> Conferindo se o SSH já está no seu Windows</h2>
+<p>Isto é uma receita simples: você abre o <span class="gterm" data-def="Uma janela de texto onde você digita comandos e o computador responde em texto — nada de cliques, só linhas." tabindex="0">terminal</span> (CMD ou PowerShell), digita um comando de checagem, e lê a resposta.</p>
+<p>Marta abre o menu Iniciar, digita "cmd", abre o Prompt de Comando e digita <code>ssh -V</code>. Se aparecer algo como <code>OpenSSH_for_Windows</code>, o SSH já está instalado — ela não precisa fazer mais nada nesta etapa.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">ssh -V</pre></div>
+<div class="mobfig">
+<div class="termdemo">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ ssh -V</pre>
+<pre class="termdemo-out">OpenSSH_for_Windows_9.5, LibreSSL 3.9.2</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ ssh -v</pre>
+<pre class="termdemo-out termdemo-err">OpenSSH_for_Windows_9.5, LibreSSL 3.9.2
+debug1: Reading configuration data ...
+(-v minúsculo liga o modo detalhado — não é isto que confirma a versão)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+</div>
+<button class="readbtn" data-read="s1">marcar como lido</button>
+</section>
+<section class="step" data-fig="2" data-kind="ferramenta" data-versao="Windows 10/11, jul/2026">
+<h2><span class="n">02</span> Se não estiver instalado</h2>
+<p>Se o comando não for reconhecido, o Windows 10/11 tem o SSH pronto pra ativar, sem baixar nada de fora: <code>Configurações → Apps → Recursos opcionais → Adicionar recurso → OpenSSH Client</code>.</p>
+<p>Ricardo passou por isso na loja: o comando deu erro na primeira vez, ele ativou o recurso pelo caminho acima, reabriu o terminal, e o <code>ssh -V</code> funcionou.</p>
+<div class="qerr">
+<p class="qk">Erro comum</p>
+<p class="qerr-txt"><b>Testar o comando sem fechar e reabrir o terminal depois de ativar o recurso.</b> O Windows só reconhece o SSH numa janela nova — feche o terminal antigo e abra outro antes de testar de novo.</p>
+</div>
+<div class="mobfig" data-mobfig="2"></div>
+<button class="readbtn" data-read="s2">marcar como lido</button>
+</section>
+<section class="step" data-fig="3" data-kind="fundamento">
+<h2><span class="n">03</span> O comando de conexão e a primeira pergunta</h2>
+<p>Com o SSH pronto, a conexão em si é uma linha: <code>ssh usuário@IP_DA_VPS</code>. Marta digita <code>ssh root@123.123.123.123</code> (o IP é sempre o da VPS dela, não este exemplo).</p>
+<p>Na primeira vez que qualquer pessoa conecta numa VPS nova, aparece uma pergunta: <code>Are you sure you want to continue connecting?</code>. É o computador confirmando que você reconhece esse servidor — digite <code>yes</code> e Enter.</p>
+<div class="quiz" data-answer="a">
+<p class="qk">Teste-se</p><p class="q">Essa pergunta de confirmação aparece toda vez que você conecta, ou só na primeira vez com aquela VPS?</p>
+<button class="opt" data-fb="Depois da primeira confirmação, o computador guarda essa 'assinatura' da VPS e não pergunta de novo, a menos que ela mude (a aula 9 explica esse caso)." data-k="a">Só na primeira vez com aquela VPS.</button>
+<button class="opt" data-k="b">Toda vez que você conecta.</button>
+<p class="qfb"></p>
+</div>
+<button class="readbtn" data-read="s3">marcar como lido</button>
+</section>
+<section class="step" data-fig="4" data-kind="fundamento">
+<h2><span class="n">04</span> Digitando a senha (que não aparece na tela)</h2>
+<p>Depois do <code>yes</code>, a VPS pede a senha. Ricardo, na primeira vez, achou que o teclado tinha travado: nenhuma letra aparecia enquanto ele digitava.</p>
+<p>É assim mesmo, de propósito: por segurança, a senha nunca aparece na tela, nem como pontinhos. Digite normalmente e aperte Enter — ela está sendo recebida, só não é mostrada.</p>
+<div class="qsteps">
+<p class="qk">Checklist da primeira conexão</p>
+<ol>
+<li>Abrir o terminal (CMD ou PowerShell).</li>
+<li>Digitar <code>ssh usuário@IP_DA_VPS</code> com os dados da sua própria VPS.</li>
+<li>Na 1ª vez, digitar <code>yes</code> quando perguntado.</li>
+<li>Digitar a senha (ela não aparece) e apertar Enter.</li>
+</ol>
+</div>
+<div class="mobfig" data-mobfig="4"></div>
+<button class="readbtn" data-read="s4">marcar como lido</button>
+</section>
+<section class="practice" data-mode="codigo" data-practice="p2">
+<p class="pk">Pratique agora <span class="pcount">0/3 feito</span></p>
+<h3 class="ph">Conecte na sua VPS pela primeira vez</h3>
+<p class="pgoal">Confirmar o SSH instalado e entrar na sua VPS com senha — ~10 min.</p>
+<p class="psafe">Conectar e olhar não muda nada na VPS. Se algo parecer errado, digite <code>exit</code> e você sai sem ter alterado nada.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">ssh -V
+ssh usuario@IP_DA_VPS</pre></div>
+<ol class="psteps">
+<li><label><input data-ptask="1" type="checkbox"/> Rodou <code>ssh -V</code> e confirmou que o SSH responde.</label></li>
+<li><label><input data-ptask="2" type="checkbox"/> Trocou <code>usuario@IP_DA_VPS</code> pelos dados reais da sua VPS e rodou o comando.</label></li>
+<li><label><input data-ptask="3" type="checkbox"/> Digitou <code>yes</code> (se pedido) e depois a senha, até ver o terminal mudar de "dono".</label></li>
+</ol>
+<p class="pdone">Você acabou de entrar na sua própria VPS pela primeira vez — a mesma ação que Marta e Ricardo fazem sempre que precisam checar algo de perto.</p>
+</section>
+</div>
+<aside class="rail"><div class="railsticky">
+<div class="figstage">
+<div class="fig termdemo on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; repare na diferença entre -V (maiúsculo, versão) e -v (minúsculo, outra coisa)" data-fig="1">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ ssh -V</pre>
+<pre class="termdemo-out">OpenSSH_for_Windows_9.5, LibreSSL 3.9.2</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ ssh -v</pre>
+<pre class="termdemo-out termdemo-err">OpenSSH_for_Windows_9.5, LibreSSL 3.9.2
+debug1: Reading configuration data ...
+(-v minúsculo liga o modo detalhado — não é isto que confirma a versão)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; ativar o recurso opcional do Windows, depois abrir um terminal novo" data-fig="2"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="60" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="60" x="40" y="40"></rect>
+<path d="M105 70 L150 70" stroke-width="2" style="stroke:var(--accent)"></path>
+<path d="M138 62 L150 70 L138 78" fill="none" stroke-width="2" style="stroke:var(--accent)"></path>
+<rect height="60" rx="8" stroke-width="2" style="stroke:var(--accent)" width="60" x="150" y="40"></rect>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; a 1ª conexão pede uma confirmação; da 2ª em diante, ela não volta" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<circle cx="60" cy="100" r="35" stroke-width="2" style="stroke:var(--accent)"></circle>
+<text font-size="11" style="fill:var(--accent)" x="42" y="105">yes</text>
+<path d="M100 100 L170 100" stroke-dasharray="4 4" stroke-width="2" style="stroke:var(--ink-soft)"></path>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; a senha é recebida mesmo sem aparecer nenhum caractere na tela" data-fig="4"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="40" rx="8" stroke-width="2" style="stroke:var(--accent)" width="130" x="45" y="80"></rect>
+<circle cx="70" cy="100" r="3" style="fill:var(--muted)"></circle>
+<circle cx="85" cy="100" r="3" style="fill:var(--muted)"></circle>
+<circle cx="100" cy="100" r="3" style="fill:var(--muted)"></circle>
+</svg></div>
+</div>
+<p class="railcap"></p>
+<div class="steps-ind"></div>
+<p class="sidenote">Grife qualquer trecho para virar um cartão de revisão.</p>
+</div></aside>
+</div>
+<div class="fecho-wrap">
+<div class="recap-autor">
+<p class="rak">Resumo</p>
+<ul>
+<li>O Windows 10/11 já vem com um jeito de ativar o SSH, sem instalar nada de fora.</li>
+<li>A primeira conexão com uma VPS nova sempre pede uma confirmação (<code>yes</code>) — só na primeira vez.</li>
+<li>A senha não aparece na tela por segurança, mesmo assim ela está sendo recebida.</li>
+</ul>
+</div>
+<div class="next-action">
+<p class="nak">Seu próximo passo</p>
+<p class="na-win">Você acabou de conectar na sua própria VPS pela primeira vez, com senha.</p>
+<p class="na-action">Nos próximos 15 minutos: entre de novo na sua VPS e repare no "prompt" (o texto antes do cursor) — ele muda pra indicar que você está dentro do servidor agora.</p>
+<p class="na-hook">Na próxima aula, você aprende os comandos básicos pra se localizar e mexer nessa VPS sem medo de se perder.</p>
+</div>
+</div>
+<nav class="lnav"><a href="#trilha">← trilha</a><a href="#aula-3">próxima: comandos básicos →</a></nav>
+<footer>Aula 2 · SSH e Chaves SSH · INEMA.CLUB PRO</footer>
+2"&gt;
+[
+  {"front":"Você digitou ssh -V e o Windows disse que não reconhece o comando. Qual o próximo passo?","back":"Ativar o OpenSSH Client em Configurações → Apps → Recursos opcionais, depois fechar e abrir um terminal novo."},
+  {"front":"Ao digitar a senha no terminal, nenhuma letra nem pontinho surge na tela. Isso indica algum problema?","back":"Não — é um comportamento de segurança do próprio SSH; o que você digita continua sendo recebido normalmente."},
+  {"front":"Na 3ª vez que você conecta na mesma VPS, a pergunta 'are you sure...' deve aparecer de novo?","back":"Não — ela só aparece na primeira conexão com aquele servidor específico."}
+]
+
+<!-- COMPLETUDE aula-2 | tipo=FERRAMENTA | steps=4
+  [OK] promise            .promise no cold-open (1)
+  [OK] why                .why após a promessa (1)
+  [OK] tempo              data-tempo no view + render no cold-open (1)
+  [OK] exemplo-profissao  exemplo aplicado em 100% dos steps (4/4)
+  [OK] apoio-visual       figura conceitual legendada em 100% dos steps (4/4)
+  [OK] practice           .practice[data-mode] (exatamente 1)
+  [OK] psafe              .psafe dentro da prática (1)
+  [OK] pgoal-tempo        .pgoal com tempo declarado (1)
+  [OK] recap-autor        .recap-autor no fecho (1)
+  [OK] next-action        .next-action no fecho (1)
+  [OK] cards              <script id="cards-2"> presente (1)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se opcional presente (1 pergunta)
+-->
+</section>
+<!-- ============================================================ -->
+<!-- ===== AULA 3 — FERRAMENTA ===== -->
+<!-- ============================================================ -->
+<section class="view" data-aula="3" data-tempo="17min" id="v-aula-3">
+<header class="hero"><div class="hero-inner">
+<div>
+<p class="kicker">Trilha · Aula 3</p>
+<h1>Andando <em>dentro</em><br/>do servidor</h1>
+<p class="promise">Ao fim desta aula você se localiza dentro da sua VPS, anda entre pastas, confere informações básicas e sai com segurança.</p>
+<p class="why">Depois de entrar (aula 2), o primeiro susto de quem nunca usou terminal é não saber onde está nem o que fazer a seguir. Estes 5 comandos resolvem 90% do "estou perdido".</p>
+<p class="cue"><span class="arw">↓</span> role para estudar</p>
+</div>
+<div class="herofig"><svg aria-hidden="true" fill="none" viewbox="0 0 300 240">
+<rect height="50" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="60" x="70" y="30"></rect>
+<rect height="50" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="60" x="150" y="30"></rect>
+<rect height="50" rx="8" stroke-width="2" style="stroke:var(--accent)" width="60" x="110" y="110"></rect>
+<path d="M100 80 L130 108 M180 80 L150 108" stroke-width="2" style="stroke:var(--muted)"></path>
+<text font-size="11" style="fill:var(--muted)" x="118" y="200">você está aqui</text>
+</svg></div>
+</div></header>
+<div class="layout">
+<div class="col">
+<section class="step" data-fig="1" data-kind="fundamento">
+<h2><span class="n">01</span> Onde você está e o que tem aqui</h2>
+<p>Assim que entra, dá pra confirmar dois pontos: onde você está e o que existe ao redor. <code>pwd</code> mostra o caminho da pasta atual; <code>ls</code> lista os arquivos e pastas dentro dela.</p>
+<p>Marta entra na VPS, digita <code>pwd</code> e vê algo como <code>/root</code> — a "sala" onde ela chegou. Depois digita <code>ls</code> e vê os arquivos da automação de WhatsApp que estão ali guardados.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">pwd
+ls</pre></div>
+<div class="mobfig">
+<div class="termdemo">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando</p>
+<pre class="termdemo-in">$ pwd
+$ ls</pre>
+<pre class="termdemo-out">/root
+automacao_whatsapp  config.json  logs</pre>
+</div>
+</div>
+</div>
+</div>
+<button class="readbtn" data-read="s1">marcar como lido</button>
+</section>
+<section class="step" data-fig="2" data-kind="fundamento">
+<h2><span class="n">02</span> Andando entre pastas</h2>
+<p>Pra entrar numa pasta, use <code>cd nome-da-pasta</code> ("cd" de mudar de diretório). Pra voltar uma pasta, <code>cd ..</code> — os dois pontos significam "a pasta de cima".</p>
+<p>Ricardo quer ver a pasta da automação de posts: digita <code>cd automacao</code>, confirma com <code>pwd</code>, e quando termina de olhar, digita <code>cd ..</code> pra voltar de onde veio.</p>
+<div class="qerr">
+<p class="qk">Erro comum</p>
+<p class="qerr-txt"><b>Esquecer o espaço entre "cd" e o nome da pasta, ou errar uma letra do nome.</b> O terminal é bem literal — <code>cdautomacao</code> não funciona, e um nome de pasta errado dá "não encontrado". Confira com <code>ls</code> o nome exato antes de entrar.</p>
+</div>
+<div class="mobfig" data-mobfig="2"></div>
+<button class="readbtn" data-read="s2">marcar como lido</button>
+</section>
+<section class="step" data-fig="3" data-kind="ferramenta" data-versao="Ubuntu/Debian">
+<h2><span class="n">03</span> Vendo informações e mantendo o sistema em dia</h2>
+<p><code>uname -a</code> mostra informações do sistema (qual versão do Linux está rodando). Em servidores baseados em Ubuntu ou Debian — os mais comuns em VPS de automação — <code>sudo apt update &amp;&amp; sudo apt upgrade -y</code> atualiza os programas instalados.</p>
+<p>Marta roda essa atualização uma vez por mês na VPS do salão, do mesmo jeito que atualiza o celular — é manutenção preventiva, não corrige um problema específico.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">uname -a
+sudo apt update &amp;&amp; sudo apt upgrade -y</pre></div>
+<div class="mobfig">
+<div class="termdemo">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ sudo apt update &amp;&amp; sudo apt upgrade -y</pre>
+<pre class="termdemo-out">Lendo listas de pacotes... Pronto
+Todos os pacotes estão atualizados.</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ apt update</pre>
+<pre class="termdemo-out termdemo-err">Permission denied (você precisa de privilégio de administrador)
+E: Não é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+</div>
+<div class="quiz" data-answer="b">
+<p class="qk">Teste-se</p><p class="q">O comando de atualização precisa ser rodado toda vez que você entra na VPS?</p>
+<button class="opt" data-k="a">Sim, é obrigatório em toda conexão.</button>
+<button class="opt" data-fb="É manutenção periódica (por exemplo, mensal), não uma etapa obrigatória de cada conexão — como atualizar o celular de vez em quando." data-k="b">Não, é manutenção periódica, não obrigatória a cada entrada.</button>
+<p class="qfb"></p>
+</div>
+<button class="readbtn" data-read="s3">marcar como lido</button>
+</section>
+<section class="step" data-fig="4" data-kind="fundamento">
+<h2><span class="n">04</span> Saindo com segurança</h2>
+<p>Pra sair da VPS e voltar pro seu próprio computador, digite <code>exit</code> e Enter. O prompt muda de volta, confirmando que você já não está mais "dentro" do servidor.</p>
+<p>Ricardo termina de checar a automação, digita <code>exit</code>, e volta a ver o terminal do seu próprio notebook — sinal de que qualquer comando que ele digitar agora roda no notebook, não mais na VPS.</p>
+<div class="qsteps">
+<p class="qk">Checklist de navegação básica</p>
+<ol>
+<li><code>pwd</code> — onde estou.</li>
+<li><code>ls</code> — o que tem aqui.</li>
+<li><code>cd nome</code> / <code>cd ..</code> — entrar / voltar de pasta.</li>
+<li><code>exit</code> — sair da VPS com segurança.</li>
+</ol>
+</div>
+<div class="mobfig" data-mobfig="4"></div>
+<button class="readbtn" data-read="s4">marcar como lido</button>
+</section>
+<section class="practice" data-mode="codigo" data-practice="p3">
+<p class="pk">Pratique agora <span class="pcount">0/2 feito</span></p>
+<h3 class="ph">Explore sua VPS sem risco</h3>
+<p class="pgoal">Rodar os 4 comandos de localização e sair com segurança — ~10 min.</p>
+<p class="psafe"><code>pwd</code>, <code>ls</code>, <code>uname -a</code> e <code>exit</code> só leem informação — nenhum deles apaga ou altera nada. Se algo parecer estranho, <code>exit</code> sempre te tira de lá.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">pwd
+ls
+cd nome-de-uma-pasta-que-voce-viu-no-ls
+cd ..
+exit</pre></div>
+<ol class="psteps">
+<li><label><input data-ptask="1" type="checkbox"/> Rodou <code>pwd</code> e <code>ls</code>, e reconheceu ao menos 1 arquivo ou pasta na lista.</label></li>
+<li><label><input data-ptask="2" type="checkbox"/> Entrou numa pasta com <code>cd</code>, voltou com <code>cd ..</code> e saiu da VPS com <code>exit</code>.</label></li>
+</ol>
+<p class="pdone">Você acabou de aprender a se mover dentro da sua VPS sem depender de ninguém pra "só dar uma olhada".</p>
+</section>
+</div>
+<aside class="rail"><div class="railsticky">
+<div class="figstage">
+<div class="fig termdemo on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; pwd mostra onde você está; ls mostra o que existe ali" data-fig="1">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando</p>
+<pre class="termdemo-in">$ pwd
+$ ls</pre>
+<pre class="termdemo-out">/root
+automacao_whatsapp  config.json  logs</pre>
+</div>
+</div>
+</div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; cd entra numa pasta; cd .. sobe de volta" data-fig="2"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="40" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="50" x="40" y="40"></rect>
+<rect height="40" rx="6" stroke-width="2" style="stroke:var(--accent)" width="50" x="130" y="100"></rect>
+<path d="M90 65 L125 115" stroke-dasharray="4 4" stroke-width="2" style="stroke:var(--muted)"></path>
+</svg></div>
+<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; esquecer o sudo é o erro mais comum ao atualizar o sistema" data-fig="3">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ sudo apt update &amp;&amp; sudo apt upgrade -y</pre>
+<pre class="termdemo-out">Lendo listas de pacotes... Pronto
+Todos os pacotes estão atualizados.</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ apt update</pre>
+<pre class="termdemo-out termdemo-err">Permission denied (você precisa de privilégio de administrador)
+E: Não é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; exit devolve o controle ao seu próprio computador" data-fig="4"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="80" rx="8" stroke-width="2" style="stroke:var(--accent)" width="55" x="140" y="60"></rect>
+<rect height="80" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="55" x="30" y="60"></rect>
+<path d="M138 100 L88 100" stroke-width="2" style="stroke:var(--muted)"></path>
+<path d="M100 92 L88 100 L100 108" fill="none" stroke-width="2" style="stroke:var(--muted)"></path>
+</svg></div>
+</div>
+<p class="railcap"></p>
+<div class="steps-ind"></div>
+<p class="sidenote">Grife qualquer trecho para virar um cartão de revisão.</p>
+</div></aside>
+</div>
+<div class="fecho-wrap">
+<div class="recap-autor">
+<p class="rak">Resumo</p>
+<ul>
+<li><code>pwd</code> e <code>ls</code> mostram onde você está e o que tem ali — sempre o primeiro passo.</li>
+<li><code>cd</code> entra numa pasta, <code>cd ..</code> volta — o terminal é literal com nomes e espaços.</li>
+<li><code>exit</code> sai da VPS com segurança e devolve o controle ao seu computador.</li>
+</ul>
+</div>
+<div class="next-action">
+<p class="nak">Seu próximo passo</p>
+<p class="na-win">Você acabou de conseguir se localizar e navegar dentro da sua VPS sem travar.</p>
+<p class="na-action">Nos próximos 15 minutos: entre na VPS, rode <code>ls</code>, escolha uma pasta que reconheça e entre nela com <code>cd</code> — depois saia com <code>exit</code>.</p>
+<p class="na-hook">Na próxima aula, você entende as chaves SSH — o jeito mais seguro de entrar, sem digitar senha toda vez.</p>
+</div>
+</div>
+<nav class="lnav"><a href="#trilha">← trilha</a><a href="#aula-4">próxima: entendendo chaves →</a></nav>
+<footer>Aula 3 · SSH e Chaves SSH · INEMA.CLUB PRO</footer>
+3"&gt;
+[
+  {"front":"Você quer voltar uma pasta sem saber o nome dela. Qual comando usa?","back":"cd .. — os dois pontos significam 'a pasta de cima', não precisa saber o nome."},
+  {"front":"Diagnóstico: você digitou cd automcao e recebeu 'não encontrado'. Qual a causa mais provável?","back":"Erro de digitação no nome da pasta — confira o nome exato com ls antes de tentar de novo."},
+  {"front":"Depois de rodar sudo apt update &amp;&amp; sudo apt upgrade -y, você precisa rodar de novo na próxima vez que conectar?","back":"Não — é manutenção periódica, não uma etapa obrigatória de toda conexão."}
+]
+
+<!-- COMPLETUDE aula-3 | tipo=FERRAMENTA | steps=4
+  [OK] promise            .promise no cold-open (1)
+  [OK] why                .why após a promessa (1)
+  [OK] tempo              data-tempo no view + render no cold-open (1)
+  [OK] exemplo-profissao  exemplo aplicado em 100% dos steps (4/4)
+  [OK] apoio-visual       figura conceitual legendada em 100% dos steps (4/4)
+  [OK] practice           .practice[data-mode] (exatamente 1)
+  [OK] psafe              .psafe dentro da prática (1)
+  [OK] pgoal-tempo        .pgoal com tempo declarado (1)
+  [OK] recap-autor        .recap-autor no fecho (1)
+  [OK] next-action        .next-action no fecho (1)
+  [OK] cards              <script id="cards-3"> presente (1)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se opcional presente (1 pergunta)
+-->
+</section>
+<!-- ============================================================ -->
+<!-- ===== AULA 4 — FUNDAMENTO ===== -->
+<!-- ============================================================ -->
+<section class="view" data-aula="4" data-tempo="18min" id="v-aula-4">
+<header class="hero"><div class="hero-inner">
+<div>
+<p class="kicker">Trilha · Aula 4</p>
+<h1>Entendendo suas<br/><em>chaves SSH</em></h1>
+<p class="promise">Ao fim desta aula você reconhece, dentro da pasta de chaves do seu computador, qual arquivo é privado e qual é público — e por que ter várias chaves é normal.</p>
+<p class="why">A partir da aula 6 você vai criar sua própria chave. Antes disso, precisa entender o que uma chave SSH é e onde ela mora — senão, qualquer passo seguinte vira decoreba de novo.</p>
+<p class="cue"><span class="arw">↓</span> role para estudar</p>
+</div>
+<div class="herofig"><svg aria-hidden="true" fill="none" viewbox="0 0 300 240">
+<rect height="90" rx="12" stroke-width="2" style="stroke:var(--ink-soft)" width="120" x="90" y="60"></rect>
+<rect height="50" rx="6" stroke-width="2" style="stroke:var(--accent)" width="35" x="105" y="80"></rect>
+<rect height="50" rx="6" stroke-width="2" style="stroke:var(--accent)" width="35" x="160" y="80"></rect>
+<text font-size="11" style="fill:var(--muted)" x="105" y="180">gaveta de chaves</text>
+</svg></div>
+</div></header>
+<div class="layout">
+<div class="col">
+<section class="step" data-fig="1" data-kind="fundamento">
+<h2><span class="n">01</span> Por que ter mais de uma chave é normal</h2>
+<p>Uma <span class="gterm" data-def="Um par de arquivos que substitui a senha: um fica só com você (chave privada), o outro fica na VPS (chave pública). Juntos, provam que é você entrando, sem digitar nada." tabindex="0">chave SSH</span> é uma forma de entrar sem digitar senha. E, assim como você tem chaves diferentes pra casa e pro carro, é comum ter uma chave SSH diferente pra cada serviço.</p>
+<p>Marta tem uma chave pra VPS do salão e outra pra GitHub, onde guarda o código da automação. São chaves separadas, cada uma abrindo só a porta a que pertence.</p>
+<button class="readbtn" data-read="s1">marcar como lido</button>
+</section>
+<section class="step" data-fig="2" data-kind="fundamento">
+<h2><span class="n">02</span> Onde essas chaves moram no seu computador</h2>
+<p>No Windows, as chaves ficam guardadas numa pasta escondida chamada <code>.ssh</code>, dentro da sua pasta de usuário: <code>C:\Users\SEU_USUARIO\.ssh\</code>. No Linux ou Mac, o mesmo lugar se chama <code>~/.ssh/</code>.</p>
+<p>Ricardo encontrou a pasta dele em <code>C:\Users\ricardo\.ssh\</code> — o mesmo padrão, só trocando o nome de usuário do Windows dele.</p>
+<div class="qanchor">A pasta <code>.ssh</code> é uma gaveta só sua — cada chave dentro dela abre uma porta específica.</div>
+<div class="mobfig" data-mobfig="2"></div>
+<button class="readbtn" data-read="s2">marcar como lido</button>
+</section>
+<section class="step" data-fig="3" data-kind="fundamento">
+<h2><span class="n">03</span> Reconhecendo os arquivos dentro da pasta</h2>
+<p>Dentro de <code>.ssh</code> você pode encontrar nomes como <code>id_ed25519</code>, <code>hostinger_vps.pub</code>, <code>config</code> e <code>known_hosts</code>. A regra pra reconhecer é simples:</p>
+<ul>
+<li>Arquivo <b>sem</b> <code>.pub</code> no final = chave privada.</li>
+<li>Arquivo <b>com</b> <code>.pub</code> no final = chave pública.</li>
+<li><code>config</code> = atalhos de conexão (aula 8).</li>
+<li><code>known_hosts</code> = lista de servidores já confirmados (a pergunta "yes" da aula 2).</li>
+</ul>
+<div class="quiz" data-answer="b">
+<p class="qk">Teste-se</p><p class="q">Marta vê dois arquivos: <code>hostinger_vps</code> e <code>hostinger_vps.pub</code>. Qual dos dois é a chave privada?</p>
+<button class="opt" data-k="a">hostinger_vps.pub</button>
+<button class="opt" data-fb="Sem .pub no final = chave privada. Com .pub = chave pública. É a regra mais importante desta aula." data-k="b">hostinger_vps</button>
+<p class="qfb"></p>
+</div>
+<button class="readbtn" data-read="s3">marcar como lido</button>
+</section>
+<section class="step" data-fig="4" data-kind="fundamento">
+<h2><span class="n">04</span> A regra de ouro: privada nunca sai daqui</h2>
+<p>A chave pública (<code>.pub</code>) pode ser colocada em qualquer VPS, no GitHub, no GitLab — ela só serve pra "reconhecer" a chave privada correspondente, nunca pra entrar sozinha.</p>
+<p>A chave privada nunca deve ser compartilhada, copiada pra nuvem pública ou mandada por mensagem. Ricardo mantém a dele só no próprio notebook, do mesmo jeito que guarda a chave física da loja com ele, nunca emprestando o molde pra qualquer um copiar.</p>
+<div class="qbefore-after">
+<div class="qba-col"><p class="qk">Antes</p><p>Uma senha só, que qualquer um pode tentar adivinhar testando várias vezes.</p></div>
+<div class="qba-col"><p class="qk">Depois</p><p>Um par de chaves: a pública espalhada onde precisar, a privada guardada só com você — impossível de adivinhar por tentativa.</p></div>
+</div>
+<button class="readbtn" data-read="s4">marcar como lido</button>
+</section>
+<section class="practice" data-mode="codigo" data-practice="p4">
+<p class="pk">Pratique agora <span class="pcount">0/2 feito</span></p>
+<h3 class="ph">Reconheça suas próprias chaves</h3>
+<p class="pgoal">Listar sua pasta .ssh e classificar cada arquivo — ~8 min.</p>
+<p class="psafe">Listar arquivos só mostra os nomes, não abre nem altera nada dentro deles. Nenhum risco.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">dir %USERPROFILE%\.ssh</pre></div>
+<ol class="psteps">
+<li><label><input data-ptask="1" type="checkbox"/> Rodou o comando (no CMD) e viu a lista de arquivos da sua pasta .ssh.</label></li>
+<li><label><input data-ptask="2" type="checkbox"/> Separou, na sua lista, quais arquivos são chave privada e quais são chave pública.</label></li>
+</ol>
+<p class="pdone">Você acabou de conseguir reconhecer, na sua própria pasta, o que é privado e o que pode ser compartilhado.</p>
+</section>
+</div>
+<aside class="rail"><div class="railsticky">
+<div class="figstage">
+<div class="fig on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; chaves diferentes pra portas diferentes — nenhuma abre a porta da outra" data-fig="1"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="45" rx="6" stroke-width="2" style="stroke:var(--accent)" width="45" x="30" y="50"></rect>
+<rect height="45" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="45" x="140" y="50"></rect>
+<rect height="45" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="45" x="30" y="120"></rect>
+<rect height="45" rx="6" stroke-width="2" style="stroke:var(--accent)" width="45" x="140" y="120"></rect>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; a pasta .ssh guarda todas as chaves do seu computador, num só lugar" data-fig="2"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="100" rx="10" stroke-width="2" style="stroke:var(--accent)" width="100" x="60" y="50"></rect>
+<path d="M60 80 L160 80" stroke-width="1.5" style="stroke:var(--ink-soft)"></path>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; sem .pub = privada; com .pub = pública — a regra que separa os dois arquivos" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="30" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="70" x="35" y="70"></rect>
+<rect height="30" rx="6" stroke-width="2" style="stroke:var(--accent)" width="70" x="120" y="70"></rect>
+<text font-size="9" style="fill:var(--ink-soft)" x="45" y="90">privada</text>
+<text font-size="9" style="fill:var(--accent)" x="130" y="90">.pub</text>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; a pública viaja pra onde for preciso; a privada fica só com você" data-fig="4"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="40" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="50" x="30" y="80"></rect>
+<rect height="40" rx="6" stroke-width="2" style="stroke:var(--accent)" width="50" x="140" y="80"></rect>
+<path d="M140 100 L190 100 M140 100 L190 60" stroke-dasharray="3 3" stroke-width="1.5" style="stroke:var(--accent)"></path>
+</svg></div>
+</div>
+<p class="railcap"></p>
+<div class="steps-ind"></div>
+<p class="sidenote">Grife qualquer trecho para virar um cartão de revisão.</p>
+</div></aside>
+</div>
+<div class="fecho-wrap">
+<div class="recap-autor">
+<p class="rak">Resumo</p>
+<ul>
+<li>Ter mais de uma chave SSH é normal — cada serviço pode ter a sua própria.</li>
+<li>As chaves moram na pasta <code>.ssh</code> da sua conta de usuário, no Windows, Linux ou Mac.</li>
+<li>A regra que separa os arquivos: sem <code>.pub</code> é privada, com <code>.pub</code> é pública — e a privada nunca sai do seu computador.</li>
+</ul>
+</div>
+<div class="next-action">
+<p class="nak">Seu próximo passo</p>
+<p class="na-win">Você acabou de conseguir reconhecer chave privada e chave pública dentro da sua própria pasta .ssh.</p>
+<p class="na-action">Nos próximos 10 minutos: abra sua pasta .ssh (se já tiver uma) e separe mentalmente cada arquivo em "privada" ou "pública".</p>
+<p class="na-hook">Na próxima aula, você resolve o erro mais comum de quem copia um comando do lugar errado — antes de criar sua própria chave na aula 6.</p>
+</div>
+</div>
+<nav class="lnav"><a href="#trilha">← trilha</a><a href="#aula-5">próxima: CMD ou PowerShell →</a></nav>
+<footer>Aula 4 · SSH e Chaves SSH · INEMA.CLUB PRO</footer>
+4"&gt;
+[
+  {"front":"Qual a diferença entre a chave que fica com você e a que vai pra VPS?","back":"A privada (sem .pub) fica só no seu computador; a pública (.pub) pode ser colocada na VPS, GitHub etc."},
+  {"front":"Decisão: você precisa mandar sua chave por mensagem pra um colega configurar a VPS. Qual arquivo você envia?","back":"Nenhum arquivo privado — envie só o .pub, e ainda assim prefira que o colega gere a própria chave."},
+  {"front":"Por que faz sentido ter uma chave pra VPS e outra pra GitHub, em vez de uma só pra tudo?","back":"Porque cada chave abre só a porta a que pertence — se uma vazar, as outras continuam seguras."},
+  {"front":"Contraste: o que muda entre 'perder a chave pública' e 'perder a chave privada'?","back":"Perder a pública não é grave (ela é feita pra circular); perder a privada é sério, porque ela é a prova de identidade."}
+]
+
+<!-- COMPLETUDE aula-4 | tipo=FUNDAMENTO | steps=4
+  [OK] promise            .promise no cold-open (1)
+  [OK] why                .why após a promessa (1)
+  [OK] tempo              data-tempo no view + render no cold-open (1)
+  [OK] exemplo-profissao  exemplo aplicado em 100% dos steps (4/4)
+  [OK] apoio-visual       figura conceitual legendada em 100% dos steps (4/4)
+  [OK] practice           .practice[data-mode] (exatamente 1)
+  [OK] psafe              .psafe dentro da prática (1)
+  [OK] pgoal-tempo        .pgoal com tempo declarado (1)
+  [OK] recap-autor        .recap-autor no fecho (1)
+  [OK] next-action        .next-action no fecho (1)
+  [OK] cards              <script id="cards-4"> presente (1)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
+  [OK] teste-se-FUND      tipo=FUNDAMENTO: presente (1 quiz data-fb)
+-->
+</section>
+<!-- ============================================================ -->
+<!-- ===== AULA 5 — FERRAMENTA ===== -->
+<!-- ============================================================ -->
+<section class="view" data-aula="5" data-tempo="16min" id="v-aula-5">
+<header class="hero"><div class="hero-inner">
+<div>
+<p class="kicker">Trilha · Aula 5</p>
+<h1>CMD ou <em>PowerShell</em>?</h1>
+<p class="promise">Ao fim desta aula você reconhece em qual terminal está e evita o erro de sintaxe mais comum de quem copia comando do lugar errado.</p>
+<p class="why">O Windows tem dois terminais diferentes, e um comando que funciona num não funciona no outro. É a causa nº 1 de "copiei certinho e não funcionou" — vamos resolver isso antes de criar sua chave, na aula 6.</p>
+<p class="cue"><span class="arw">↓</span> role para estudar</p>
+</div>
+<div class="herofig"><svg aria-hidden="true" fill="none" viewbox="0 0 300 240">
+<rect height="80" rx="10" stroke-width="2" style="stroke:var(--ink-soft)" width="100" x="35" y="60"></rect>
+<rect height="80" rx="10" stroke-width="2" style="stroke:var(--accent)" width="100" x="165" y="60"></rect>
+<text font-size="11" style="fill:var(--muted)" x="60" y="105">CMD</text>
+<text font-size="11" style="fill:var(--accent)" x="195" y="105">PowerShell</text>
+</svg></div>
+</div></header>
+<div class="layout">
+<div class="col">
+<section class="step" data-fig="1" data-kind="ferramenta" data-versao="Windows 10/11">
+<h2><span class="n">01</span> Por que existem dois terminais no Windows</h2>
+<p>O Windows traz dois terminais diferentes: o CMD (Prompt de Comando, mais antigo) e o PowerShell (mais novo, mais recursos). Os dois abrem uma janela parecida, mas entendem sintaxes diferentes pra algumas coisas — como referenciar a pasta do seu usuário.</p>
+<p>Marta abriu o CMD sem perceber, pois ela buscou "prompt" no menu Iniciar — o PowerShell aparece quando se busca "powershell". Nenhum dos dois é "o errado"; são só diferentes.</p>
+<button class="readbtn" data-read="s1">marcar como lido</button>
+</section>
+<section class="step" data-fig="2" data-kind="ferramenta" data-versao="Windows 10/11">
+<h2><span class="n">02</span> O erro que mais aparece: misturar a sintaxe dos dois</h2>
+<p>Ricardo estava no CMD, no caminho <code>C:\Users\ricardo\projetos\testes&gt;</code>, e tentou rodar <code>type $env:USERPROFILE\.ssh\id_ed25519.pub</code> — um comando de PowerShell, digitado dentro do CMD.</p>
+<div class="qerr">
+<p class="qk">Erro comum</p>
+<p class="qerr-txt"><b>Usar <code>$env:USERPROFILE</code> dentro do CMD (ou <code>%USERPROFILE%</code> dentro do PowerShell).</b> O erro aparece como algo do tipo "a sintaxe do nome do arquivo... está incorreta" — porque <code>$env:USERPROFILE</code> é sintaxe do PowerShell, e o CMD não entende.</p>
+</div>
+<div class="mobfig" data-mobfig="2"></div>
+<button class="readbtn" data-read="s2">marcar como lido</button>
+</section>
+<section class="step" data-fig="3" data-kind="ferramenta" data-versao="Windows 10/11">
+<h2><span class="n">03</span> A tradução entre os dois</h2>
+<p>A regra é: no CMD, a pasta do seu usuário se escreve <code>%USERPROFILE%</code>; no PowerShell, se escreve <code>$env:USERPROFILE</code>. É o mesmo lugar, só com uma "palavra" diferente pra cada terminal.</p>
+<p>Marta aprendeu a olhar o título da janela ou o próprio prompt: se aparece só um caminho simples como <code>C:\Users\marta&gt;</code>, costuma ser CMD; se aparece <code>PS C:\Users\marta&gt;</code> com "PS" na frente, é PowerShell.</p>
+<button class="readbtn" data-read="s3">marcar como lido</button>
+</section>
+<section class="step" data-fig="4" data-kind="ferramenta" data-versao="Windows 10/11">
+<h2><span class="n">04</span> Checklist antes de copiar qualquer comando</h2>
+<p>A partir de agora, todo comando que envolve <code>%USERPROFILE%</code> ou <code>$env:USERPROFILE</code> nesta trilha indica pra qual dos dois terminais ele serve — confira antes de colar. Foi exatamente esse hábito que evitou o mesmo erro de Ricardo se repetir com Marta.</p>
+<div class="qsteps">
+<p class="qk">Checklist rápido</p>
+<ol>
+<li>Olhe o prompt: tem "PS" na frente? É PowerShell. Não tem? É CMD.</li>
+<li>No CMD, use <code>%USERPROFILE%</code>.</li>
+<li>No PowerShell, use <code>$env:USERPROFILE</code>.</li>
+<li>Deu erro de sintaxe? Confira se você está no terminal certo pro comando.</li>
+</ol>
+</div>
+<div class="mobfig" data-mobfig="4"></div>
+<button class="readbtn" data-read="s4">marcar como lido</button>
+</section>
+<section class="practice" data-mode="codigo" data-practice="p5">
+<p class="pk">Pratique agora <span class="pcount">0/2 feito</span></p>
+<h3 class="ph">Compare os dois terminais na prática</h3>
+<p class="pgoal">Rodar o mesmo pedido nos dois terminais, cada um com sua sintaxe — ~8 min.</p>
+<p class="psafe">Só estamos listando o conteúdo de uma pasta — nenhum dos dois comandos altera nada.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">REM no CMD:
+dir %USERPROFILE%\.ssh
+
+# no PowerShell:
+dir $env:USERPROFILE\.ssh</pre></div>
+<ol class="psteps">
+<li><label><input data-ptask="1" type="checkbox"/> Abriu o CMD e rodou <code>dir %USERPROFILE%\.ssh</code> com sucesso.</label></li>
+<li><label><input data-ptask="2" type="checkbox"/> Abriu o PowerShell e rodou <code>dir $env:USERPROFILE\.ssh</code> com sucesso.</label></li>
+</ol>
+<p class="pdone">Você acabou de aprender a reconhecer, antes de digitar, qual sintaxe cada terminal espera.</p>
+</section>
+</div>
+<aside class="rail"><div class="railsticky">
+<div class="figstage">
+<div class="fig on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; dois terminais diferentes, cada um com sua própria sintaxe" data-fig="1"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="70" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="80" x="20" y="60"></rect>
+<rect height="70" rx="8" stroke-width="2" style="stroke:var(--accent)" width="80" x="120" y="60"></rect>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; um comando de PowerShell, digitado dentro do CMD, não é reconhecido" data-fig="2"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="50" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="140" x="40" y="70"></rect>
+<path d="M60 95 L160 95" stroke-dasharray="4 3" stroke-width="2" style="stroke:var(--warm)"></path>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; mesma pasta, duas palavras diferentes pra chegar nela" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<circle cx="110" cy="100" r="30" stroke-width="2" style="stroke:var(--accent)"></circle>
+<path d="M60 60 L80 85 M160 60 L140 85" stroke-width="2" style="stroke:var(--ink-soft)"></path>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; confira o prompt antes de colar qualquer comando" data-fig="4"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="40" rx="8" stroke-width="2" style="stroke:var(--accent)" width="130" x="45" y="80"></rect>
+<path d="M60 100 L75 100" stroke-width="3" style="stroke:var(--accent)"></path>
+</svg></div>
+</div>
+<p class="railcap"></p>
+<div class="steps-ind"></div>
+<p class="sidenote">Grife qualquer trecho para virar um cartão de revisão.</p>
+</div></aside>
+</div>
+<div class="fecho-wrap">
+<div class="recap-autor">
+<p class="rak">Resumo</p>
+<ul>
+<li>CMD e PowerShell são terminais diferentes, com sintaxes próprias pra algumas coisas.</li>
+<li>O erro mais comum é usar <code>$env:USERPROFILE</code> no CMD, ou <code>%USERPROFILE%</code> no PowerShell.</li>
+<li>Olhar o prompt (tem "PS" na frente ou não?) diz em qual dos dois você está.</li>
+</ul>
+</div>
+<div class="next-action">
+<p class="nak">Seu próximo passo</p>
+<p class="na-win">Você acabou de conseguir identificar em qual terminal está antes de colar um comando.</p>
+<p class="na-action">Nos próximos 10 minutos: abra os dois terminais lado a lado e repare na diferença do prompt de cada um.</p>
+<p class="na-hook">Na próxima aula, você usa exatamente esse cuidado pra criar sua própria chave SSH, do jeito certo pro seu terminal.</p>
+</div>
+</div>
+<nav class="lnav"><a href="#trilha">← trilha</a><a href="#aula-6">próxima: criar sua chave →</a></nav>
+<footer>Aula 5 · SSH e Chaves SSH · INEMA.CLUB PRO</footer>
+5"&gt;
+[
+  {"front":"Você está num prompt que começa com 'PS C:\\Users\\...'. Qual terminal é esse?","back":"PowerShell — o 'PS' na frente é o sinal."},
+  {"front":"Diagnóstico: apareceu 'a sintaxe do nome do arquivo... está incorreta' ao usar $env:USERPROFILE. O que provavelmente aconteceu?","back":"O comando foi digitado no CMD, que não entende a sintaxe $env: (isso é PowerShell)."},
+  {"front":"Aplicação: você vai copiar um comando de um tutorial que usa %USERPROFILE%. Em qual terminal ele deve ser colado?","back":"No CMD — %USERPROFILE% é a sintaxe do CMD, não do PowerShell."}
+]
+
+<!-- COMPLETUDE aula-5 | tipo=FERRAMENTA | steps=4
+  [OK] promise            .promise no cold-open (1)
+  [OK] why                .why após a promessa (1)
+  [OK] tempo              data-tempo no view + render no cold-open (1)
+  [OK] exemplo-profissao  exemplo aplicado em 100% dos steps (4/4)
+  [OK] apoio-visual       figura conceitual legendada em 100% dos steps (4/4)
+  [OK] practice           .practice[data-mode] (exatamente 1)
+  [OK] psafe              .psafe dentro da prática (1)
+  [OK] pgoal-tempo        .pgoal com tempo declarado (1)
+  [OK] recap-autor        .recap-autor no fecho (1)
+  [OK] next-action        .next-action no fecho (1)
+  [OK] cards              <script id="cards-5"> presente (1)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se não presente nesta aula
+-->
+</section>
+<!-- ============================================================ -->
+<!-- ===== AULA 6 — FERRAMENTA ===== -->
+<!-- ============================================================ -->
+<section class="view" data-aula="6" data-tempo="19min" id="v-aula-6">
+<header class="hero"><div class="hero-inner">
+<div>
+<p class="kicker">Trilha · Aula 6</p>
+<h1>Criando sua<br/>própria <em>chave SSH</em></h1>
+<p class="promise">Ao fim desta aula você tem uma chave SSH própria, criada por você, pronta pra ser colocada na sua VPS na próxima aula.</p>
+<p class="why">Até aqui você só reconheceu chaves já existentes. Agora é a sua vez de gerar a primeira — o passo que te deixa independente de digitar senha a cada conexão.</p>
+<p class="cue"><span class="arw">↓</span> role para estudar</p>
+</div>
+<div class="herofig"><svg aria-hidden="true" fill="none" viewbox="0 0 300 240">
+<rect height="60" rx="10" stroke-width="2" style="stroke:var(--ink-soft)" width="100" x="100" y="50"></rect>
+<circle cx="150" cy="140" r="30" stroke-width="2" style="stroke:var(--accent)"></circle>
+<path d="M150 110 L150 90" stroke-width="2" style="stroke:var(--accent)"></path>
+<text font-size="11" style="fill:var(--muted)" x="110" y="200">molde novo, sob medida</text>
+</svg></div>
+</div></header>
+<div class="layout">
+<div class="col">
+<section class="step" data-fig="1" data-kind="fundamento">
+<h2><span class="n">01</span> Vendo uma chave que já existe</h2>
+<p>Antes de criar uma chave nova, vale ver como uma chave pública se parece por dentro: um texto longo, começando com <code>ssh-ed25519</code>. No CMD, <code>type</code> mostra o conteúdo de um arquivo de texto.</p>
+<p>Marta já tem a chave <code>id_ed25519.pub</code> de um teste antigo; ela roda <code>type %USERPROFILE%\.ssh\id_ed25519.pub</code> e vê algo como <code>ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... minha-vps</code>.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">type %USERPROFILE%\.ssh\id_ed25519.pub</pre></div>
+<div class="mobfig">
+<div class="termdemo">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ type %USERPROFILE%\.ssh\id_ed25519.pub</pre>
+<pre class="termdemo-out">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... minha-vps</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ type %USERPROFILE%\.ssh\minha_vps.pub</pre>
+<pre class="termdemo-out termdemo-err">O sistema não pode encontrar o arquivo especificado.
+(nome de arquivo errado — confira o nome exato com dir antes)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+</div>
+<button class="readbtn" data-read="s1">marcar como lido</button>
+</section>
+<section class="step" data-fig="2" data-kind="ferramenta" data-versao="Windows 10/11, jul/2026">
+<h2><span class="n">02</span> Abrindo a pasta .ssh pelo Explorer, se preferir enxergar</h2>
+<p>Se preferir ver os arquivos como ícones em vez de texto, o comando <code>explorer %USERPROFILE%\.ssh</code> abre a pasta no Explorer do Windows, a mesma janela de sempre pra ver arquivos.</p>
+<p>Ricardo prefere esse jeito: ele digita o comando, o Explorer abre, e ele vê os arquivos <code>hostinger_vps</code> e <code>hostinger_vps.pub</code> lado a lado, do jeito que já está acostumado a olhar pastas.</p>
+<div class="qerr">
+<p class="qk">Erro comum</p>
+<p class="qerr-txt"><b>Arrastar ou copiar a chave privada pra fora dessa pasta "só pra guardar num lugar mais fácil".</b> Qualquer cópia da chave privada em outro lugar (área de trabalho, nuvem pessoal) é uma cópia a mais que pode vazar — deixe-a só ali dentro.</p>
+</div>
+<div class="mobfig" data-mobfig="2"></div>
+<button class="readbtn" data-read="s2">marcar como lido</button>
+</section>
+<section class="step" data-fig="3" data-kind="ferramenta">
+<h2><span class="n">03</span> Criando a chave, passo a passo</h2>
+<p>O tipo de chave recomendado hoje é o <code>ed25519</code> — mais moderno e mais seguro. O comando de criação pede um caminho e um nome pra sua chave nova.</p>
+<p>Marta escolhe chamar a dela de <code>minha_vps</code>, no CMD:</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">ssh-keygen -t ed25519 -C "minha-vps" -f %USERPROFILE%\.ssh\minha_vps</pre></div>
+<div class="mobfig">
+<div class="termdemo">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ ssh-keygen -t ed25519 -C "minha-vps" -f %USERPROFILE%\.ssh\minha_vps</pre>
+<pre class="termdemo-out">Generating public/private ed25519 key pair.
+Your identification has been saved in minha_vps
+Your public key has been saved in minha_vps.pub</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ ssh-keygen -t ed25519 -C "minha-vps" -f %USERPROFILE%\.ssh\minha_vps</pre>
+<pre class="termdemo-out termdemo-err">minha_vps already exists.
+Overwrite (y/n)?
+(já existe uma chave com esse nome — escolha outro nome em vez de sobrescrever sem querer)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+</div>
+<p>Depois disso, é só apertar Enter nas perguntas seguintes (elas pedem uma senha extra opcional pra chave — pode deixar em branco e confirmar).</p>
+<div class="quiz" data-answer="a">
+<p class="qk">Teste-se</p><p class="q">Depois de rodar o comando acima, quantos arquivos novos aparecem na pasta .ssh?</p>
+<button class="opt" data-fb="Todo par de chaves gera exatamente 2 arquivos: um privado e um público — nunca um só." data-k="a"> 2 — a chave privada e a chave pública.</button>
+<button class="opt" data-k="b">1 — só a chave privada.</button>
+<p class="qfb"></p>
+</div>
+<button class="readbtn" data-read="s3">marcar como lido</button>
+</section>
+<section class="step" data-fig="4" data-kind="fundamento">
+<h2><span class="n">04</span> O que a criação gera</h2>
+<p>O comando da etapa anterior cria dois arquivos: <code>minha_vps</code> (chave privada — nunca compartilhe) e <code>minha_vps.pub</code> (chave pública — pode ir pra VPS).</p>
+<p>Ricardo confere os dois arquivos na sua pasta e já reconhece qual é qual, aplicando a regra da aula 4: sem <code>.pub</code> é privada, com <code>.pub</code> é pública.</p>
+<div class="qsteps">
+<p class="qk">Conferindo sua chave nova</p>
+<ol>
+<li>Rodar o <code>ssh-keygen</code> com <code>-f</code> apontando pro nome escolhido.</li>
+<li>Apertar Enter nas perguntas seguintes.</li>
+<li>Conferir os 2 arquivos novos: um privado, um <code>.pub</code>.</li>
+</ol>
+</div>
+<div class="mobfig" data-mobfig="4"></div>
+<button class="readbtn" data-read="s4">marcar como lido</button>
+</section>
+<section class="practice" data-mode="codigo" data-practice="p6">
+<p class="pk">Pratique agora <span class="pcount">0/2 feito</span></p>
+<h3 class="ph">Gere sua própria chave SSH</h3>
+<p class="pgoal">Criar um par de chaves novo, escolhendo seu próprio nome — ~10 min.</p>
+<p class="psafe">Criar uma chave nova não apaga nenhuma chave existente nem mexe na sua VPS — é só um par de arquivos novo dentro da pasta .ssh. Se não gostar do nome escolhido, pode apagar os 2 arquivos e criar de novo.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">ssh-keygen -t ed25519 -C "minha-vps" -f %USERPROFILE%\.ssh\&lt;escolha um nome&gt;</pre></div>
+<ol class="psteps">
+<li><label><input data-ptask="1" type="checkbox"/> Rodou o comando trocando <code>&lt;escolha um nome&gt;</code> por um nome seu (ex.: <code>minha_vps</code>).</label></li>
+<li><label><input data-ptask="2" type="checkbox"/> Confirmou, na pasta .ssh, que os 2 arquivos novos apareceram — um privado, um <code>.pub</code>.</label></li>
+</ol>
+<p class="pdone">Você acabou de criar sua própria chave SSH — pronta pra entrar na VPS na próxima aula.</p>
+</section>
+</div>
+<aside class="rail"><div class="railsticky">
+<div class="figstage">
+<div class="fig termdemo on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; a chave pública é um texto legível, sempre começando por ssh-ed25519" data-fig="1">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ type %USERPROFILE%\.ssh\id_ed25519.pub</pre>
+<pre class="termdemo-out">ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA... minha-vps</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ type %USERPROFILE%\.ssh\minha_vps.pub</pre>
+<pre class="termdemo-out termdemo-err">O sistema não pode encontrar o arquivo especificado.
+(nome de arquivo errado — confira o nome exato com dir antes)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; o Explorer mostra a mesma pasta .ssh, só que com ícones" data-fig="2"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="80" rx="10" stroke-width="2" style="stroke:var(--ink-soft)" width="120" x="50" y="60"></rect>
+<rect height="20" rx="4" stroke-width="2" style="stroke:var(--accent)" width="30" x="70" y="80"></rect>
+<rect height="20" rx="4" stroke-width="2" style="stroke:var(--accent)" width="30" x="120" y="80"></rect>
+</svg></div>
+<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; rodar ssh-keygen 2x com o mesmo nome pergunta antes de sobrescrever" data-fig="3">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ ssh-keygen -t ed25519 -C "minha-vps" -f %USERPROFILE%\.ssh\minha_vps</pre>
+<pre class="termdemo-out">Generating public/private ed25519 key pair.
+Your identification has been saved in minha_vps
+Your public key has been saved in minha_vps.pub</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ ssh-keygen -t ed25519 -C "minha-vps" -f %USERPROFILE%\.ssh\minha_vps</pre>
+<pre class="termdemo-out termdemo-err">minha_vps already exists.
+Overwrite (y/n)?
+(já existe uma chave com esse nome — escolha outro nome em vez de sobrescrever sem querer)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; toda criação gera exatamente 2 arquivos: 1 privado + 1 público" data-fig="4"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="40" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="55" x="40" y="80"></rect>
+<rect height="40" rx="6" stroke-width="2" style="stroke:var(--accent)" width="55" x="125" y="80"></rect>
+</svg></div>
+</div>
+<p class="railcap"></p>
+<div class="steps-ind"></div>
+<p class="sidenote">Grife qualquer trecho para virar um cartão de revisão.</p>
+</div></aside>
+</div>
+<div class="fecho-wrap">
+<div class="recap-autor">
+<p class="rak">Resumo</p>
+<ul>
+<li><code>ssh-keygen -t ed25519</code> cria um par de chaves novo, com o nome que você escolher.</li>
+<li>Toda criação gera exatamente 2 arquivos: a privada e a <code>.pub</code>, correspondente a ela.</li>
+<li>A chave privada nunca deve sair da pasta .ssh, nem ser copiada pra outro lugar "por conveniência".</li>
+</ul>
+</div>
+<div class="next-action">
+<p class="nak">Seu próximo passo</p>
+<p class="na-win">Você acabou de criar sua própria chave SSH, do zero.</p>
+<p class="na-action">Nos próximos 10 minutos: rode <code>type</code> no arquivo <code>.pub</code> da chave que você criou, só pra ver como o conteúdo dela se parece.</p>
+<p class="na-hook">Na próxima aula, você coloca essa chave dentro da VPS e conecta sem digitar senha nunca mais.</p>
+</div>
+</div>
+<nav class="lnav"><a href="#trilha">← trilha</a><a href="#aula-7">próxima: colocar a chave na VPS →</a></nav>
+<footer>Aula 6 · SSH e Chaves SSH · INEMA.CLUB PRO</footer>
+6"&gt;
+[
+  {"front":"Qual comando cria um novo par de chaves SSH do tipo recomendado atualmente?","back":"ssh-keygen -t ed25519 -C \"comentário\" -f caminho/nome-da-chave"},
+  {"front":"Diagnóstico: você rodou o ssh-keygen e só vê 1 arquivo na pasta. O que provavelmente deu errado?","back":"O comando não terminou de rodar (talvez travado numa das perguntas) — normalmente ele sempre gera 2 arquivos."},
+  {"front":"Aplicação: você quer guardar uma cópia da chave privada 'por segurança', num pendrive. Isso é uma boa prática?","back":"Não é recomendado — cada cópia extra da chave privada é um risco a mais; prefira criar uma chave nova se precisar em outro lugar."}
+]
+
+<!-- COMPLETUDE aula-6 | tipo=FERRAMENTA | steps=4
+  [OK] promise            .promise no cold-open (1)
+  [OK] why                .why após a promessa (1)
+  [OK] tempo              data-tempo no view + render no cold-open (1)
+  [OK] exemplo-profissao  exemplo aplicado em 100% dos steps (4/4)
+  [OK] apoio-visual       figura conceitual legendada em 100% dos steps (4/4)
+  [OK] practice           .practice[data-mode] (exatamente 1)
+  [OK] psafe              .psafe dentro da prática (1)
+  [OK] pgoal-tempo        .pgoal com tempo declarado (1)
+  [OK] recap-autor        .recap-autor no fecho (1)
+  [OK] next-action        .next-action no fecho (1)
+  [OK] cards              <script id="cards-6"> presente (1)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se opcional presente (1 pergunta)
+-->
+</section>
+<!-- ============================================================ -->
+<!-- ===== AULA 7 — PRATICA/INTEGRAÇÃO ===== -->
+<!-- ============================================================ -->
+<section class="view" data-aula="7" data-tempo="21min" id="v-aula-7">
+<header class="hero"><div class="hero-inner">
+<div>
+<p class="kicker">Trilha · Aula 7</p>
+<h1>Colocando sua chave<br/>na <em>VPS</em>, passo a passo</h1>
+<p class="promise">Ao fim desta aula você conecta na sua VPS usando a chave que criou, sem digitar senha nenhuma.</p>
+<p class="why">Você já tem a chave (aula 6). Falta um passo: entregar a metade pública dela pra VPS reconhecer, e testar. É a aula mais longa da trilha porque reúne tudo que veio antes — vale a pena ir com calma.</p>
+<p class="cue"><span class="arw">↓</span> role para estudar</p>
+</div>
+<div class="herofig"><svg aria-hidden="true" fill="none" viewbox="0 0 300 240">
+<rect height="100" rx="10" stroke-width="2" style="stroke:var(--ink-soft)" width="70" x="30" y="70"></rect>
+<rect height="120" rx="10" stroke-width="2" style="stroke:var(--accent)" width="70" x="200" y="60"></rect>
+<rect height="20" rx="4" stroke-width="2" style="stroke:var(--accent)" width="40" x="215" y="100"></rect>
+<path d="M100 100 L200 100" stroke-dasharray="6 6" stroke-width="2" style="stroke:var(--accent)"></path>
+<text font-size="10" style="fill:var(--muted)" x="185" y="220">chave reconhecida</text>
+</svg></div>
+</div></header>
+<div class="layout">
+<div class="col">
+<section class="step" data-fig="1" data-kind="fundamento">
+<h2><span class="n">01</span> Qual chave vai pra VPS</h2>
+<p>A regra é sempre a mesma: só a chave pública (o arquivo <code>.pub</code>) viaja até a VPS. A privada nunca sai do seu computador — nem nesta aula.</p>
+<p class="mk">Marta já rodou <code>ssh-keygen</code> e tem <code>minha_vps</code> e <code>minha_vps.pub</code>. Ela segue os passos abaixo uma vez, e da próxima vez que precisa checar a automação de WhatsApp, entra sem digitar nada além do comando. Ricardo faz exatamente a mesma sequência, na VPS da loja dele, trocando só o IP e o nome da chave.</p>
+<button class="readbtn" data-read="s1">marcar como lido</button>
+</section>
+<section class="step" data-fig="2" data-kind="ferramenta" data-versao="Ubuntu/Debian, nano padrão">
+<h2><span class="n">02</span> Criando o lugar certo dentro da VPS</h2>
+<p>Primeiro, veja sua chave pública no seu computador (<code>type %USERPROFILE%\.ssh\minha_vps.pub</code>) e copie o texto inteiro. Depois, entre na VPS com senha (aula 2) e crie, dentro dela, a pasta e o arquivo que guardam as chaves autorizadas:</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">mkdir -p ~/.ssh
+nano ~/.ssh/authorized_keys</pre></div>
+<p>O <code>nano</code> é um editor de texto simples que abre dentro do próprio terminal. Cole ali a chave pública copiada, e salve com <code>CTRL+O</code>, <code>Enter</code>, depois <code>CTRL+X</code> pra sair. Foi assim que Ricardo colou a chave pública da loja dentro da VPS, na primeira vez que fez esse passo.</p>
+<div class="qsteps">
+<p class="qk">Checklist completo: chave no seu PC até dentro da VPS</p>
+<ol>
+<li>Ver e copiar a chave pública no seu computador.</li>
+<li>Entrar na VPS com senha.</li>
+<li><code>mkdir -p ~/.ssh</code> — criar a pasta, se ainda não existir.</li>
+<li><code>nano ~/.ssh/authorized_keys</code> — colar a chave e salvar (<code>CTRL+O</code>, Enter, <code>CTRL+X</code>).</li>
+</ol>
+</div>
+<div class="mobfig">
+<div class="termdemo">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando</p>
+<pre class="termdemo-in">$ mkdir -p ~/.ssh
+$ nano ~/.ssh/authorized_keys</pre>
+<pre class="termdemo-out">(o nano abre uma tela de edição — cole a chave, CTRL+O, Enter, CTRL+X)</pre>
+</div>
+</div>
+</div>
+</div>
+<button class="readbtn" data-read="s2">marcar como lido</button>
+</section>
+<section class="step" data-fig="3" data-kind="ferramenta" data-versao="Ubuntu/Debian">
+<h2><span class="n">03</span> Ajustando as permissões</h2>
+<p>O <span class="gterm" data-def="Regras que dizem quem pode ler, escrever ou executar um arquivo ou pasta dentro do Linux. Números como 700 e 600 são códigos pra essas regras." tabindex="0">permissões</span> da pasta e do arquivo precisam estar corretas, ou a VPS ignora a chave por segurança. Ainda dentro da VPS, rode:</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys</pre></div>
+<p>Ricardo esqueceu esse passo na primeira tentativa e sua chave simplesmente não funcionou — sem nenhuma mensagem de erro clara. Depois de ajustar as permissões, funcionou de primeira.</p>
+<div class="mobfig">
+<div class="termdemo">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ chmod 700 ~/.ssh
+$ chmod 600 ~/.ssh/authorized_keys</pre>
+<pre class="termdemo-out">(nada aparece — no Linux, silêncio depois de um comando quase sempre significa sucesso)</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ ssh -i minha_vps root@IP_DA_VPS
+(pulando o chmod)</pre>
+<pre class="termdemo-out termdemo-err">root@IP: Permission denied (publickey,password).
+(a VPS recusa a chave porque as permissões da pasta .ssh estão abertas demais)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+</div>
+<div class="quiz" data-answer="b">
+<p class="qk">Teste-se</p><p class="q">Se você pular a etapa do <code>chmod</code>, o que tende a acontecer ao tentar conectar com a chave?</p>
+<button class="opt" data-k="a">Nada muda, o chmod é só opcional.</button>
+<button class="opt" data-fb="A VPS recusa aceitar a chave se as permissões da pasta .ssh ou do authorized_keys estiverem abertas demais — é uma checagem de segurança do próprio SSH." data-k="b">A VPS pode recusar a chave, mesmo ela estando correta.</button>
+<p class="qfb"></p>
+</div>
+<button class="readbtn" data-read="s3">marcar como lido</button>
+</section>
+<section class="step" data-fig="4" data-kind="fundamento">
+<h2><span class="n">04</span> Testando a conexão com a chave</h2>
+<p>Digite <code>exit</code> pra sair da VPS, volte pro seu computador, e conecte de novo — agora indicando qual chave usar, com <code>-i</code>:</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">ssh -i %USERPROFILE%\.ssh\minha_vps usuario@IP_DA_VPS</pre></div>
+<p>Se tudo estiver certo, Marta entra direto, sem nenhuma tela pedindo senha — só a chave já basta.</p>
+<div class="qbefore-after">
+<div class="qba-col"><p class="qk">Antes</p><p>Toda conexão pedia a senha, e ela precisava lembrar ou copiar de algum lugar.</p></div>
+<div class="qba-col"><p class="qk">Depois</p><p>A chave prova quem ela é sozinha — conexão mais rápida e mais segura, sem senha nenhuma.</p></div>
+</div>
+<div class="mobfig">
+<div class="termdemo">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ ssh -i %USERPROFILE%\.ssh\minha_vps root@123.123.123.123</pre>
+<pre class="termdemo-out">Welcome to Ubuntu 22.04 LTS
+root@vps:~#</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ ssh -i %USERPROFILE%\.ssh\minha_vps root@123.123.123.123</pre>
+<pre class="termdemo-out termdemo-err">root@123.123.123.123's password:
+(ainda pediu senha — a chave não foi aceita: revise o authorized_keys e o chmod)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+</div>
+<button class="readbtn" data-read="s4">marcar como lido</button>
+</section>
+<section class="practice" data-mode="codigo" data-practice="p7">
+<p class="pk">Pratique agora <span class="pcount">0/4 feito</span></p>
+<h3 class="ph">Coloque sua chave na VPS e conecte sem senha</h3>
+<p class="pgoal">Seguir a sequência completa, do seu computador até a VPS reconhecer sua chave — ~15 min.</p>
+<p class="psafe">Você sempre pode entrar de novo com senha (aula 2) se algo travar aqui — nenhum passo desta prática apaga o acesso por senha que já existe.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">type %USERPROFILE%\.ssh\minha_vps.pub
+ssh usuario@IP_DA_VPS
+mkdir -p ~/.ssh
+nano ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+exit
+ssh -i %USERPROFILE%\.ssh\minha_vps usuario@IP_DA_VPS</pre></div>
+<ol class="psteps">
+<li><label><input data-ptask="1" type="checkbox"/> Copiou o conteúdo da sua chave <code>.pub</code>.</label></li>
+<li><label><input data-ptask="2" type="checkbox"/> Colou a chave dentro de <code>~/.ssh/authorized_keys</code>, na VPS, e salvou.</label></li>
+<li><label><input data-ptask="3" type="checkbox"/> Ajustou as permissões com os 2 comandos <code>chmod</code>.</label></li>
+<li><label><input data-ptask="4" type="checkbox"/> Conectou de novo usando <code>-i</code> e entrou sem digitar senha.</label></li>
+</ol>
+<p class="pdone">Você acabou de conseguir entrar na sua VPS só com a chave — o mesmo fluxo que Marta e Ricardo usam todo dia, sem depender de suporte técnico.</p>
+</section>
+</div>
+<aside class="rail"><div class="railsticky">
+<div class="figstage">
+<div class="fig on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; só a metade pública da chave faz essa viagem até a VPS" data-fig="1"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="40" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="55" x="30" y="80"></rect>
+<rect height="40" rx="6" stroke-width="2" style="stroke:var(--accent)" width="55" x="140" y="80"></rect>
+<path d="M140 100 L90 100" stroke-dasharray="4 4" stroke-width="2" style="stroke:var(--accent)"></path>
+</svg></div>
+<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; mkdir cria a pasta; nano abre o arquivo pra colar a chave" data-fig="2">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando</p>
+<pre class="termdemo-in">$ mkdir -p ~/.ssh
+$ nano ~/.ssh/authorized_keys</pre>
+<pre class="termdemo-out">(o nano abre uma tela de edição — cole a chave, CTRL+O, Enter, CTRL+X)</pre>
+</div>
+</div>
+</div>
+<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; chmod não mostra nada quando dá certo — o silêncio é o sinal de sucesso" data-fig="3">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ chmod 700 ~/.ssh
+$ chmod 600 ~/.ssh/authorized_keys</pre>
+<pre class="termdemo-out">(nada aparece — no Linux, silêncio depois de um comando quase sempre significa sucesso)</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ ssh -i minha_vps root@IP_DA_VPS
+(pulando o chmod)</pre>
+<pre class="termdemo-out termdemo-err">root@IP: Permission denied (publickey,password).
+(a VPS recusa a chave porque as permissões da pasta .ssh estão abertas demais)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; com a chave certa, não aparece nenhum pedido de senha" data-fig="4">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ ssh -i %USERPROFILE%\.ssh\minha_vps root@123.123.123.123</pre>
+<pre class="termdemo-out">Welcome to Ubuntu 22.04 LTS
+root@vps:~#</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ ssh -i %USERPROFILE%\.ssh\minha_vps root@123.123.123.123</pre>
+<pre class="termdemo-out termdemo-err">root@123.123.123.123's password:
+(ainda pediu senha — a chave não foi aceita: revise o authorized_keys e o chmod)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+</div>
+<p class="railcap"></p>
+<div class="steps-ind"></div>
+<p class="sidenote">Grife qualquer trecho para virar um cartão de revisão.</p>
+</div></aside>
+</div>
+<div class="fecho-wrap">
+<div class="recap-autor">
+<p class="rak">Resumo</p>
+<ul>
+<li>A chave pública é colada dentro de <code>~/.ssh/authorized_keys</code>, na própria VPS.</li>
+<li>As permissões (<code>chmod 700</code> na pasta, <code>chmod 600</code> no arquivo) são obrigatórias — sem elas, a VPS ignora a chave.</li>
+<li>Conectar com <code>-i</code> apontando pra chave elimina a necessidade de digitar senha.</li>
+</ul>
+</div>
+<div class="next-action">
+<p class="nak">Seu próximo passo</p>
+<p class="na-win">Você acabou de conseguir entrar na sua VPS usando só a sua chave, sem senha.</p>
+<p class="na-action">Nos próximos 15 minutos: feche o terminal, abra outro do zero, e conecte de novo com <code>-i</code>, só pra confirmar que funciona de forma repetível.</p>
+<p class="na-hook">Na próxima aula, você deixa esse comando ainda mais curto, com um apelido pra sua VPS.</p>
+</div>
+</div>
+<nav class="lnav"><a href="#trilha">← trilha</a><a href="#aula-8">próxima: atalhos com config →</a></nav>
+<footer>Aula 7 · SSH e Chaves SSH · INEMA.CLUB PRO</footer>
+7"&gt;
+[
+  {"front":"Aplicação: você acabou de gerar uma chave nova (aula 6). Quais os 4 passos, na ordem, pra ela funcionar na sua VPS?","back":"Copiar a .pub, colar em ~/.ssh/authorized_keys (via nano), ajustar chmod 700/600, testar com ssh -i."},
+  {"front":"Diagnóstico: você fez tudo certo, mas ao conectar com -i a VPS ainda pede senha. O que checar primeiro?","back":"Confira o chmod: uma pasta ou arquivo aberto demais é a causa mais comum desse sintoma específico."}
+]
+
+<!-- COMPLETUDE aula-7 | tipo=PRATICA | steps=4
+  [OK] promise            .promise no cold-open (1)
+  [OK] why                .why após a promessa (1)
+  [OK] tempo              data-tempo no view + render no cold-open (1)
+  [OK] exemplo-profissao  exemplo aplicado em 100% dos steps (4/4)
+  [OK] apoio-visual       figura conceitual legendada em 100% dos steps (4/4)
+  [OK] practice           .practice[data-mode] (exatamente 1)
+  [OK] psafe              .psafe dentro da prática (1)
+  [OK] pgoal-tempo        .pgoal com tempo declarado (1)
+  [OK] recap-autor        .recap-autor no fecho (1)
+  [OK] next-action        .next-action no fecho (1)
+  [OK] cards              <script id="cards-7"> presente (1)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
+  [N/A] teste-se-FUND     aula é PRATICA (obrigação não se aplica); teste-se opcional presente (1 pergunta)
+-->
+</section>
+<!-- ============================================================ -->
+<!-- ===== AULA 8 — FERRAMENTA ===== -->
+<!-- ============================================================ -->
+<section class="view" data-aula="8" data-tempo="16min" id="v-aula-8">
+<header class="hero"><div class="hero-inner">
+<div>
+<p class="kicker">Trilha · Aula 8</p>
+<h1>Atalhos com<br/>o arquivo <em>config</em></h1>
+<p class="promise">Ao fim desta aula você conecta na sua VPS digitando só um apelido, sem repetir IP, usuário e caminho da chave toda vez.</p>
+<p class="why">O comando da aula 7 funciona, mas é longo de repetir todo dia. Um arquivo de 4 linhas resolve isso de vez.</p>
+<p class="cue"><span class="arw">↓</span> role para estudar</p>
+</div>
+<div class="herofig"><svg aria-hidden="true" fill="none" viewbox="0 0 300 240">
+<rect height="90" rx="12" stroke-width="2" style="stroke:var(--ink-soft)" width="140" x="80" y="60"></rect>
+<path d="M100 90 L200 90 M100 110 L170 110 M100 130 L190 130" stroke-width="2" style="stroke:var(--accent)"></path>
+<text font-size="11" style="fill:var(--muted)" x="95" y="180">caderno de atalhos</text>
+</svg></div>
+</div></header>
+<div class="layout">
+<div class="col">
+<section class="step" data-fig="1" data-kind="fundamento">
+<h2><span class="n">01</span> O problema de repetir sempre a mesma coisa</h2>
+<p>Todo dia, pra entrar na VPS com a chave, é preciso lembrar (ou copiar de algum lugar) um comando inteiro: usuário, IP e caminho da chave. É fácil errar um caractere no meio disso.</p>
+<p>Ricardo mantinha o comando completo anotado num bloco de notas, só pra colar toda vez que precisava — funcionava, mas era um passo extra desnecessário.</p>
+<button class="readbtn" data-read="s1">marcar como lido</button>
+</section>
+<section class="step" data-fig="2" data-kind="ferramenta">
+<h2><span class="n">02</span> Criando o arquivo config</h2>
+<p>No seu computador, dentro da pasta <code>.ssh</code>, você pode criar um arquivo chamado exatamente <code>config</code> (sem nenhuma extensão), com um bloco parecido com este:</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">Host hostinger
+    HostName 123.123.123.123
+    User root
+    IdentityFile ~/.ssh/minha_vps</pre></div>
+<p>Marta cria o dela com o apelido <code>salao</code>, trocando o IP e o usuário pelos da VPS dela mesma.</p>
+<div class="qerr">
+<p class="qk">Erro comum</p>
+<p class="qerr-txt"><b>Esquecer o recuo (espaços) antes de cada linha depois de "Host".</b> O arquivo config segue um formato onde as linhas de baixo do "Host" precisam estar recuadas — sem isso, a conexão pelo apelido não funciona.</p>
+</div>
+<div class="mobfig">
+<div class="termdemo">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ ssh hostinger</pre>
+<pre class="termdemo-out">Welcome to Ubuntu 22.04 LTS
+root@vps:~#</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ ssh hostinger</pre>
+<pre class="termdemo-out termdemo-err">ssh: Could not resolve hostname hostinger: Name or service not known
+(o arquivo config existe, mas as linhas abaixo de "Host" não estavam recuadas)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+</div>
+<button class="readbtn" data-read="s2">marcar como lido</button>
+</section>
+<section class="step" data-fig="3" data-kind="fundamento">
+<h2><span class="n">03</span> O que cada linha do arquivo significa</h2>
+<p><code>Host</code> é o apelido que você escolhe (o nome que vai digitar). <code>HostName</code> é o IP de verdade da VPS. <code>User</code> é o usuário. <code>IdentityFile</code> aponta pra chave privada que deve ser usada.</p>
+<div class="quiz" data-answer="a">
+<p class="qk">Teste-se</p><p class="q">No exemplo do Ricardo, qual linha ele precisa trocar pra apontar pra chave que criou na aula 6?</p>
+<button class="opt" data-fb="IdentityFile aponta exatamente pro arquivo da chave privada que deve ser usada nessa conexão." data-k="a">IdentityFile</button>
+<button class="opt" data-k="b">Host</button>
+<p class="qfb"></p>
+</div>
+<button class="readbtn" data-read="s3">marcar como lido</button>
+</section>
+<section class="step" data-fig="4" data-kind="ferramenta">
+<h2><span class="n">04</span> Conectando só com o apelido</h2>
+<p>Depois de salvo o arquivo, o comando de conexão vira só: <code>ssh hostinger</code> — em vez de digitar usuário, IP e caminho da chave toda vez. Marta faz isso hoje em segundos, no meio de um dia cheio de clientes no salão.</p>
+<div class="qsteps">
+<p class="qk">Checklist do atalho</p>
+<ol>
+<li>Criar (ou abrir) o arquivo <code>config</code> dentro da pasta <code>.ssh</code>.</li>
+<li>Escrever o bloco <code>Host</code> / <code>HostName</code> / <code>User</code> / <code>IdentityFile</code>, recuado.</li>
+<li>Salvar e testar com <code>ssh &lt;apelido escolhido&gt;</code>.</li>
+</ol>
+</div>
+<div class="mobfig" data-mobfig="4"></div>
+<button class="readbtn" data-read="s4">marcar como lido</button>
+</section>
+<section class="practice" data-mode="codigo" data-practice="p8">
+<p class="pk">Pratique agora <span class="pcount">0/2 feito</span></p>
+<h3 class="ph">Crie seu próprio atalho de conexão</h3>
+<p class="pgoal">Escrever o arquivo config e conectar só com o apelido — ~8 min.</p>
+<p class="psafe">O arquivo config só afeta o seu computador, não a VPS — se errar algo, é só reabrir e corrigir, sem risco de travar o servidor.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">Host &lt;escolha um apelido&gt;
+    HostName IP_DA_SUA_VPS
+    User &lt;seu usuario&gt;
+    IdentityFile ~/.ssh/minha_vps</pre></div>
+<ol class="psteps">
+<li><label><input data-ptask="1" type="checkbox"/> Criou o arquivo <code>config</code> com os 4 dados da sua própria VPS.</label></li>
+<li><label><input data-ptask="2" type="checkbox"/> Conectou digitando só <code>ssh &lt;apelido&gt;</code>, sem IP nem caminho de chave.</label></li>
+</ol>
+<p class="pdone">Você acabou de reduzir todo o processo de conexão a uma única palavra — o seu apelido.</p>
+</section>
+</div>
+<aside class="rail"><div class="railsticky">
+<div class="figstage">
+<div class="fig on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; repetir o mesmo comando longo, todo dia, é o problema que este atalho resolve" data-fig="1"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="20" rx="4" stroke-width="2" style="stroke:var(--ink-soft)" width="140" x="40" y="80"></rect>
+<rect height="20" rx="4" stroke-width="2" style="stroke:var(--ink-soft)" width="140" x="40" y="110"></rect>
+</svg></div>
+<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; config bem recuado conecta pelo apelido; mal recuado, não reconhece o host" data-fig="2">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ ssh hostinger</pre>
+<pre class="termdemo-out">Welcome to Ubuntu 22.04 LTS
+root@vps:~#</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ ssh hostinger</pre>
+<pre class="termdemo-out termdemo-err">ssh: Could not resolve hostname hostinger: Name or service not known
+(o arquivo config existe, mas as linhas abaixo de "Host" não estavam recuadas)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; cada linha aponta pra um dado diferente da conexão" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="30" rx="6" stroke-width="2" style="stroke:var(--accent)" width="60" x="30" y="40"></rect>
+<rect height="30" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="60" x="30" y="85"></rect>
+<rect height="30" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="60" x="30" y="130"></rect>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; ssh + apelido substitui o comando inteiro" data-fig="4"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="40" rx="8" stroke-width="2" style="stroke:var(--accent)" width="80" x="70" y="80"></rect>
+<text font-size="12" style="fill:var(--accent)" x="90" y="105">ssh apelido</text>
+</svg></div>
+</div>
+<p class="railcap"></p>
+<div class="steps-ind"></div>
+<p class="sidenote">Grife qualquer trecho para virar um cartão de revisão.</p>
+</div></aside>
+</div>
+<div class="fecho-wrap">
+<div class="recap-autor">
+<p class="rak">Resumo</p>
+<ul>
+<li>O arquivo <code>config</code>, dentro da pasta .ssh, guarda apelidos de conexão.</li>
+<li>Cada bloco tem 4 linhas: <code>Host</code> (apelido), <code>HostName</code> (IP), <code>User</code> e <code>IdentityFile</code> (chave).</li>
+<li>Depois de criado, conectar vira só <code>ssh &lt;apelido&gt;</code>.</li>
+</ul>
+</div>
+<div class="next-action">
+<p class="nak">Seu próximo passo</p>
+<p class="na-win">Você acabou de reduzir sua conexão diária a uma única palavra.</p>
+<p class="na-action">Nos próximos 5 minutos: teste seu apelido de um terminal fechado e reaberto, pra confirmar que ele fica salvo.</p>
+<p class="na-hook">Na última aula, você aprende a diagnosticar os erros mais comuns — pra quando algo não sair como o esperado.</p>
+</div>
+</div>
+<nav class="lnav"><a href="#trilha">← trilha</a><a href="#aula-9">próxima: resolvendo erros comuns →</a></nav>
+<footer>Aula 8 · SSH e Chaves SSH · INEMA.CLUB PRO</footer>
+8"&gt;
+[
+  {"front":"Quais são as 4 linhas que compõem um bloco do arquivo config?","back":"Host (apelido), HostName (IP), User (usuário) e IdentityFile (caminho da chave)."},
+  {"front":"Diagnóstico: você criou o config certinho, mas ssh apelido diz que não reconhece o host. O que checar primeiro?","back":"O recuo (espaços) nas linhas abaixo de Host — sem o recuo correto, o arquivo não é lido do jeito esperado."},
+  {"front":"Aplicação: você tem 2 VPS diferentes. Como o arquivo config lida com isso?","back":"Basta criar 2 blocos Host diferentes, um apelido pra cada, cada um com seu próprio HostName/User/IdentityFile."}
+]
+
+<!-- COMPLETUDE aula-8 | tipo=FERRAMENTA | steps=4
+  [OK] promise            .promise no cold-open (1)
+  [OK] why                .why após a promessa (1)
+  [OK] tempo              data-tempo no view + render no cold-open (1)
+  [OK] exemplo-profissao  exemplo aplicado em 100% dos steps (4/4)
+  [OK] apoio-visual       figura conceitual legendada em 100% dos steps (4/4)
+  [OK] practice           .practice[data-mode] (exatamente 1)
+  [OK] psafe              .psafe dentro da prática (1)
+  [OK] pgoal-tempo        .pgoal com tempo declarado (1)
+  [OK] recap-autor        .recap-autor no fecho (1)
+  [OK] next-action        .next-action no fecho (1)
+  [OK] cards              <script id="cards-8"> presente (1)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se opcional presente (1 pergunta)
+-->
+</section>
+<!-- ============================================================ -->
+<!-- ===== AULA 9 — FERRAMENTA ===== -->
+<!-- ============================================================ -->
+<section class="view" data-aula="9" data-tempo="19min" id="v-aula-9">
+<header class="hero"><div class="hero-inner">
+<div>
+<p class="kicker">Trilha · Aula 9</p>
+<h1>Resolvendo os<br/>erros mais <em>comuns</em></h1>
+<p class="promise">Ao fim desta aula você diagnostica sozinho os 4 erros de conexão mais frequentes e sabe qual ação tomar em cada um.</p>
+<p class="why">Em algum momento, uma conexão vai falhar — é normal, não é sinal de que você fez algo fundamentalmente errado. O que muda tudo é reconhecer a mensagem e já saber por onde começar a investigar.</p>
+<p class="cue"><span class="arw">↓</span> role para estudar</p>
+</div>
+<div class="herofig"><svg aria-hidden="true" fill="none" viewbox="0 0 300 240">
+<rect height="80" rx="12" stroke-width="2" style="stroke:var(--ink-soft)" width="120" x="90" y="60"></rect>
+<path d="M110 90 L190 90 M110 110 L170 110" stroke-width="2" style="stroke:var(--warm)"></path>
+<circle cx="120" cy="170" r="18" stroke-width="2" style="stroke:var(--accent)"></circle>
+<text font-size="11" style="fill:var(--muted)" x="100" y="205">lupa de diagnóstico</text>
+</svg></div>
+</div></header>
+<div class="layout">
+<div class="col">
+<section class="step" data-fig="1" data-kind="fundamento">
+<h2><span class="n">01</span> Ler a mensagem de erro é o primeiro passo</h2>
+<p>O SSH sempre devolve uma mensagem quando algo falha — e essa mensagem já indica a direção certa da investigação. As 4 mais comuns são: <code>Permission denied</code>, <code>Connection timed out</code>, <code>Connection refused</code>, e um erro de "assinatura" mudada.</p>
+<p>Marta, na primeira vez que viu <code>Permission denied</code>, achou que tinha quebrado alguma coisa. Não tinha: era só um usuário digitado errado.</p>
+<button class="readbtn" data-read="s1">marcar como lido</button>
+</section>
+<section class="step" data-fig="2" data-kind="ferramenta" data-versao="Ubuntu/Debian">
+<h2><span class="n">02</span> "Permission denied"</h2>
+<p>Essa mensagem quer dizer que a conexão chegou até a VPS, mas a autenticação falhou. As causas mais comuns: senha errada, usuário errado, chave errada, a chave pública não foi colocada no <code>authorized_keys</code>, ou as permissões da pasta <code>.ssh</code> estão erradas (aula 7). Foi exatamente essa mensagem que Marta viu na primeira tentativa, por um usuário digitado errado.</p>
+<div class="qerr">
+<p class="qk">Erro comum</p>
+<p class="qerr-txt"><b>"Permission denied" ao tentar conectar com <code>-i</code> pela chave.</b> Antes de suspeitar da chave em si, confira: o arquivo <code>authorized_keys</code> tem exatamente a chave certa colada, e as permissões estão em <code>700</code>/<code>600</code>.</p>
+</div>
+<div class="mobfig" data-mobfig="2"></div>
+<button class="readbtn" data-read="s2">marcar como lido</button>
+</section>
+<section class="step" data-fig="3" data-kind="fundamento">
+<h2><span class="n">03</span> "Connection timed out", "Connection refused" e chave antiga</h2>
+<p><code>Connection timed out</code> significa que o pedido nem chegou a uma resposta — geralmente IP errado, VPS desligada, ou uma porta bloqueada por firewall. <code>Connection refused</code> significa que a VPS respondeu dizendo "não" — o serviço SSH pode estar desligado nela, ou a porta usada está errada.</p>
+<p>Ricardo recriou a VPS da loja uma vez, e ao tentar conectar de novo recebeu um aviso de que a "assinatura" do servidor tinha mudado — o comando <code>ssh-keygen -R IP_DA_VPS</code> limpa a assinatura antiga guardada e permite conectar de novo, aceitando a nova.</p>
+<button class="readbtn" data-read="s3">marcar como lido</button>
+</section>
+<section class="step" data-fig="4" data-kind="ferramenta" data-versao="systemd, Ubuntu/Debian 11+">
+<h2><span class="n">04</span> Checando o serviço SSH direto na VPS</h2>
+<p>Se você já está dentro da VPS (por exemplo, entrando com senha depois de uma falha com chave), <code>systemctl status ssh</code> (ou <code>sshd</code>, dependendo do sistema) mostra se o serviço está ativo. Ricardo usou esse comando quando a automação de posts da loja parou de responder, e confirmou que o serviço estava de pé — o problema era outro.</p>
+<div class="pcodewrap"><button class="pcopy" type="button">copiar</button><pre class="pcode">systemctl status ssh
+sudo systemctl enable ssh
+sudo systemctl start ssh</pre></div>
+<div class="qsteps">
+<p class="qk">Checklist final: do zero até conectar com chave</p>
+<ol>
+<li>Verificar/instalar SSH no seu computador (aula 2).</li>
+<li>Conectar com senha, ao menos uma vez (aula 2).</li>
+<li>Criar sua chave (aula 6) e colocá-la na VPS (aula 7).</li>
+<li>Criar o atalho no config (aula 8).</li>
+<li>Se algo falhar: ler a mensagem de erro e usar este checklist de causas.</li>
+</ol>
+</div>
+<div class="mobfig">
+<div class="termdemo">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ systemctl status ssh</pre>
+<pre class="termdemo-out">● ssh.service - OpenBSD Secure Shell server
+     Active: active (running)</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ systemctl status sshd</pre>
+<pre class="termdemo-out termdemo-err">Unit sshd.service could not be found.
+(neste sistema o serviço se chama "ssh", não "sshd" — tente o outro nome)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+</div>
+<button class="readbtn" data-read="s4">marcar como lido</button>
+</section>
+<section class="practice" data-mode="analise" data-practice="p9">
+<p class="pk">Pratique agora <span class="pcount">0/2 feito</span></p>
+<h3 class="ph">Diagnostique 2 casos reais</h3>
+<p class="pgoal">Ler os 2 mini-casos e apontar a causa mais provável de cada um — ~8 min.</p>
+<p class="psafe">É só leitura e raciocínio — nenhuma VPS de verdade é tocada nesta prática.</p>
+<p class="mk"><b>Caso 1.</b> Marta tenta conectar com <code>ssh -i ~/.ssh/minha_vps admin@45.77.12.9</code> e recebe <code>Permission denied</code>. Ela confirma que o IP e o usuário estão certos.</p>
+<p class="mk"><b>Caso 2.</b> Ricardo tenta conectar na VPS da loja e o terminal fica parado por um minuto, até aparecer <code>Connection timed out</code>. Ele confirma no navegador de outro serviço que a VPS está ligada.</p>
+<ol class="psteps">
+<li><label><input data-ptask="1" type="checkbox"/> Escreveu a causa mais provável do Caso 1 (dica: envolve o authorized_keys ou as permissões).</label></li>
+<li><label><input data-ptask="2" type="checkbox"/> Escreveu a causa mais provável do Caso 2 (dica: a conexão nem chegou a responder).</label></li>
+</ol>
+<details><summary>ver gabarito comentado</summary>
+<p><b>Caso 1:</b> como IP e usuário já foram confirmados, a causa mais provável é a chave pública não estar corretamente colada em <code>authorized_keys</code>, ou as permissões da pasta <code>.ssh</code>/arquivo estarem erradas — o mesmo diagnóstico do step 2 desta aula. <b>Caso 2:</b> "timed out" (sem resposta nenhuma) aponta pra um problema de rede antes mesmo de chegar no SSH — porta bloqueada por firewall é a causa mais comum quando a VPS está confirmadamente ligada.</p>
+</details>
+<p class="pdone">Você acabou de conseguir diagnosticar problemas de conexão pela mensagem de erro, sem depender de mais ninguém pra entender o que está acontecendo.</p>
+</section>
+</div>
+<aside class="rail"><div class="railsticky">
+<div class="figstage">
+<div class="fig on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; toda falha de SSH vem com uma mensagem — ela é a pista, não um beco sem saída" data-fig="1"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="60" rx="10" stroke-width="2" style="stroke:var(--warm)" width="120" x="50" y="70"></rect>
+<path d="M70 100 L150 100" stroke-width="2" style="stroke:var(--ink-soft)"></path>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; Permission denied: a conexão chegou, mas a autenticação foi recusada" data-fig="2"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<rect height="40" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="70" x="30" y="80"></rect>
+<rect height="40" rx="6" stroke-width="2" style="stroke:var(--warm)" width="50" x="140" y="80"></rect>
+<path d="M100 100 L138 100" stroke-width="2" style="stroke:var(--warm)"></path>
+</svg></div>
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; timed out: nenhuma resposta chegou; refused: a VPS respondeu recusando" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<circle cx="110" cy="100" r="30" stroke-dasharray="4 4" stroke-width="2" style="stroke:var(--ink-soft)"></circle>
+<path d="M80 130 L140 70" stroke-width="2" style="stroke:var(--warm)"></path>
+</svg></div>
+<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; o nome certo do serviço muda de sistema pra sistema — ssh ou sshd" data-fig="4">
+<button class="termdemo-reveal" type="button">ver o que acontece →</button>
+<div class="termdemo-body" hidden="">
+<div class="termdemo-cmd on" data-variant="ok">
+<p class="termdemo-k">comando certo</p>
+<pre class="termdemo-in">$ systemctl status ssh</pre>
+<pre class="termdemo-out">● ssh.service - OpenBSD Secure Shell server
+     Active: active (running)</pre>
+</div>
+<div class="termdemo-cmd" data-variant="erro">
+<p class="termdemo-k">erro comum</p>
+<pre class="termdemo-in">$ systemctl status sshd</pre>
+<pre class="termdemo-out termdemo-err">Unit sshd.service could not be found.
+(neste sistema o serviço se chama "ssh", não "sshd" — tente o outro nome)</pre>
+</div>
+<button class="termdemo-toggle" type="button">ver o erro comum</button>
+</div>
+</div>
+</div>
+<p class="railcap"></p>
+<div class="steps-ind"></div>
+<p class="sidenote">Grife qualquer trecho para virar um cartão de revisão.</p>
+</div></aside>
+</div>
+<div class="fecho-wrap">
+<div class="recap-autor">
+<p class="rak">Resumo</p>
+<ul>
+<li>Toda falha de SSH vem com uma mensagem — ela já indica a direção certa de investigação.</li>
+<li>"Permission denied" é problema de autenticação; "timed out"/"refused" são problema de rede ou serviço desligado.</li>
+<li><code>systemctl status ssh</code>, direto na VPS, confirma se o serviço está ativo.</li>
+</ul>
+</div>
+<div class="next-action">
+<p class="nak">Seu próximo passo</p>
+<p class="na-win">Você acabou de completar a trilha inteira: hoje você conecta, entende chaves, cria a sua, coloca na VPS, cria atalhos e diagnostica erros — sozinho.</p>
+<p class="na-action">Nos próximos 15 minutos: escolha 1 automação sua rodando numa VPS e conecte nela usando o apelido do config, só pra confirmar que todo o fluxo funciona de ponta a ponta.</p>
+<p class="na-hook">Da próxima vez que algo travar na sua VPS, você já sabe por onde começar — sem esperar ninguém disponível.</p>
+</div>
+</div>
+<nav class="lnav"><a href="#trilha">← trilha</a><a href="#trilha">concluir trilha ✓ →</a></nav>
+<footer>Aula 9 · SSH e Chaves SSH · INEMA.CLUB PRO</footer>
+9"&gt;
+[
+  {"front":"Diagnóstico: você recebe Connection refused ao tentar conectar. O que isso indica, diferente de um timed out?","back":"A VPS respondeu recusando a conexão (ex.: serviço SSH desligado ou porta errada) — timed out é quando nem chega a haver resposta."},
+  {"front":"Aplicação: sua VPS foi recriada e agora aparece um aviso de que a assinatura do servidor mudou. O que fazer?","back":"Rodar ssh-keygen -R IP_DA_VPS pra limpar a assinatura antiga, e tentar conectar de novo aceitando a nova."},
+  {"front":"Decisão: você recebe Permission denied mesmo com IP e usuário confirmados corretos. Por onde começar a investigar?","back":"Pelo authorized_keys (a chave está colada certinho?) e pelas permissões da pasta .ssh (700) e do arquivo (600)."}
+]
+
+<!-- COMPLETUDE aula-9 | tipo=FERRAMENTA | steps=4
+  [OK] promise            .promise no cold-open (1)
+  [OK] why                .why após a promessa (1)
+  [OK] tempo              data-tempo no view + render no cold-open (1)
+  [OK] exemplo-profissao  exemplo aplicado em 100% dos steps (4/4)
+  [OK] apoio-visual       figura conceitual legendada em 100% dos steps (4/4)
+  [OK] practice           .practice[data-mode] (exatamente 1)
+  [OK] psafe              .psafe dentro da prática (1)
+  [OK] pgoal-tempo        .pgoal com tempo declarado (1)
+  [OK] recap-autor        .recap-autor no fecho (1)
+  [OK] next-action        .next-action no fecho (1)
+  [OK] cards              <script id="cards-9"> presente (1)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se não presente nesta aula
+-->
+</section>
+<script src="assets/curso.js"></script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>SSH and SSH Keys: access your VPS without relying on support · INEMA.CLUB PRO</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&amp;family=Inter:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --bg:#0E0D14;--bg2:#15131d;--panel:#1a1824;--ink:#ECE6D9;--ink-soft:#C7C2D0;--muted:#948DA6;--faint:#6C6580;
+    --line:#2A2637;--line2:#37324a;--accent:#7CE0C6;--accent-ink:#0E0D14;--warm:#F2B45C;
+    --serif:"Newsreader",Georgia,serif;--sans:"Inter",system-ui,sans-serif;--mono:"Space Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.7;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 clamp(24px,5vw,60px)}
+  header.top{padding:26px 0}
+  header.top .wrap{display:flex;align-items:center;gap:10px}
+  header.top .mark{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--accent);text-decoration:none;font-weight:700}
+  header.top .pro{background:var(--accent);color:var(--accent-ink);border-radius:4px;padding:2px 6px;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-decoration:none;margin-left:8px}
+  header.top .course{color:var(--muted);font-size:12px;letter-spacing:.04em;border-left:1px solid var(--line2);padding-left:10px;margin-left:2px;font-family:var(--mono)}
+  .hero{position:relative;padding:10vh 0 9vh;border-bottom:1px solid var(--line);overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;z-index:0;background:radial-gradient(55% 48% at 80% 20%,rgba(124,224,198,.14),transparent 60%),radial-gradient(90% 90% at 50% 40%,var(--bg2),var(--bg) 72%)}
+  .hero .wrap{position:relative;z-index:1}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);margin:0 0 18px}
+  h1{font-family:var(--serif);font-weight:500;font-size:clamp(36px,6vw,64px);line-height:1.05;letter-spacing:-.02em;margin:0 0 22px;max-width:18ch}
+  h1 em{font-style:italic;color:var(--accent)}
+  .lead{font-family:var(--serif);font-size:clamp(18px,2vw,22px);line-height:1.55;color:var(--ink-soft);max-width:46ch;margin:0 0 34px}
+  .cta{display:inline-block;font-family:var(--mono);font-size:13px;letter-spacing:.06em;background:var(--accent);color:var(--accent-ink);text-decoration:none;border-radius:99px;padding:15px 26px;font-weight:700}
+  .cta:hover{opacity:.92}
+  .sub{color:var(--muted);font-size:13.5px;margin-top:14px;font-family:var(--mono)}
+
+  section{padding:8vh 0}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
+  h2{font-family:var(--serif);font-weight:500;font-size:clamp(26px,3.6vw,36px);margin:0 0 28px}
+
+  .resultados{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .resultado{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:22px 24px}
+  .resultado p{margin:0;font-size:15px;color:var(--ink-soft);line-height:1.55}
+  .resultado p b{color:var(--ink)}
+
+  .aulas{display:grid;gap:14px}
+  .au{display:grid;grid-template-columns:52px 1fr auto;gap:18px;align-items:center;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 22px}
+  .au .num{font-family:var(--serif);font-size:26px;color:var(--accent);text-align:center}
+  .au h3{font-family:var(--serif);font-weight:500;font-size:19px;margin:0 0 4px}
+  .au p{margin:0;color:var(--muted);font-size:14px}
+  .au .meta{font-family:var(--mono);font-size:11px;color:var(--accent);white-space:nowrap;text-align:right}
+  .au:hover{border-color:var(--accent)}
+
+  .publico{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .publico .col{background:var(--panel);padding:22px 24px}
+  .publico .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 12px}
+  .publico .col.sim .lbl{color:var(--accent)}
+  .publico .col.nao .lbl{color:var(--muted)}
+  .publico ul{margin:0;padding:0;list-style:none}
+  .publico li{position:relative;padding-left:20px;margin:0 0 10px;color:var(--ink-soft);font-size:14.5px;line-height:1.5}
+  .publico li::before{content:"—";position:absolute;left:0;color:var(--faint)}
+
+  footer{border-top:1px solid var(--line);padding:6vh 0 8vh;color:var(--faint);text-align:center;font-family:var(--serif);font-style:italic}
+
+  @media(max-width:720px){ .publico{grid-template-columns:1fr} }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<link href="https://inematds.github.io/ssh-basico/landing.html" hreflang="pt-BR" rel="alternate"/><link href="https://inematds.github.io/ssh-basico/en/landing.html" hreflang="en" rel="alternate"/><link href="https://inematds.github.io/ssh-basico/es/landing.html" hreflang="es" rel="alternate"/></head>
+<body><div class="inema-lang" style="position:fixed;right:14px;bottom:14px;z-index:9999;display:flex;gap:2px;padding:4px;border-radius:10px;background:rgba(12,12,16,.82);border:1px solid rgba(226,162,59,.45);font:600 12px/1 Sora,Inter,system-ui,sans-serif;backdrop-filter:blur(8px)" translate="no"><a href="../landing.html" hreflang="pt-BR" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">PT</a><a href="landing.html" hreflang="en" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#1a1206;background:#E2A23B">EN</a><a href="../es/landing.html" hreflang="es" style="padding:6px 8px;border-radius:7px;text-decoration:none;color:#e9e9ee">ES</a></div>
+<header class="top"><div class="wrap">
+<a class="mark" href="https://inema.club" rel="noopener" target="_blank">INEMA.CLUB</a>
+<a class="pro" href="https://inema.pro" rel="noopener" target="_blank">PRO</a>
+<span class="course">SSH and SSH Keys</span>
+</div></header>
+<section class="hero"><div class="wrap">
+<p class="kicker">SSH and VPS for people who have never opened a terminal</p>
+<h1>Your entry point <em>to the VPS itself</em></h1>
+<p class="lead">9 short lessons to help you connect to your VPS, create your SSH key, and solve the most common issues on your own—without waiting for tech support for every adjustment.</p>
+<a class="cta" href="curso.html#trilha">start now →</a>
+<p class="sub">~15–20 min per lesson · nothing to install beyond what Windows already has · works on your computer</p>
+</div></section>
+<section><div class="wrap">
+<p class="eyebrow">What you’ll know how to do</p>
+<h2>Results, not theory</h2>
+<div class="resultados">
+<div class="resultado"><p><b>Connect on your own</b> — log in to your VPS from the Windows terminal, first with a password and then with a key, without depending on anyone to “just take a look.”</p></div>
+<div class="resultado"><p><b>Having your own SSH key</b> — create your own key, understand how it works, and put it on the VPS, so you no longer have to type a password every time you connect.</p></div>
+<div class="resultado"><p><b>Diagnose the most common errors</b> — recognize “Permission denied,” connection refused, and an old key, and know where to start troubleshooting.</p></div>
+</div>
+</div></section>
+<section><div class="wrap">
+<p class="eyebrow">Who it’s for</p>
+<h2>Made for where you are</h2>
+<div class="publico">
+<div class="col sim">
+<p class="lbl">is for you to</p>
+<ul>
+<li>You have an automation (such as an n8n) running on a VPS and sometimes need to log in on your own.</li>
+<li>You’ve never opened a terminal before and want to get over your fear of it, at your own pace.</li>
+<li>You have little time and prefer learning by doing, in 15–20-minute lessons.</li>
+</ul>
+</div>
+<div class="col nao">
+<p class="lbl">this isn't for you if</p>
+<ul>
+<li>You already use SSH every day and are looking for advanced server administration content.</li>
+<li>You want a course with traditional video lessons.</li>
+</ul>
+</div>
+</div>
+</div></section>
+<section><div class="wrap">
+<p class="eyebrow">Track</p>
+<h2>From start to finish</h2>
+<div class="aulas">
+<a class="au" href="curso.html#aula-1">
+<div class="num">1</div>
+<div><h3>What SSH is (and why it’s yours, not just your technician’s)</h3><p>Understand what happens in a remote connection and recognize the 4 elements it always needs.</p></div>
+<div class="meta">16 min</div>
+</a>
+<a class="au" href="curso.html#aula-2">
+<div class="num">2</div>
+<div><h3>Setting up your computer and making the first connection</h3><p>Check whether SSH is already on your Windows PC and log in to your VPS for the first time, using a password.</p></div>
+<div class="meta">18 min</div>
+</a>
+<a class="au" href="curso.html#aula-3">
+<div class="num">3</div>
+<div><h3>Moving around inside the server</h3><p>Everyday commands for finding your way around, working with folders, and exiting safely.</p></div>
+<div class="meta">17 min</div>
+</a>
+<a class="au" href="curso.html#aula-4">
+<div class="num">4</div>
+<div><h3>Understanding your SSH keys</h3><p>Why there are two halves of a key, where they live, and the golden rule that is never broken.</p></div>
+<div class="meta">18 min</div>
+</a>
+<a class="au" href="curso.html#aula-5">
+<div class="num">5</div>
+<div><h3>CMD or PowerShell? Recognizing where you are</h3><p>The most common mistake when copying a command from the wrong place—and how to never make it again.</p></div>
+<div class="meta">16 min</div>
+</a>
+<a class="au" href="curso.html#aula-6">
+<div class="num">6</div>
+<div><h3>Creating Your Own SSH Key</h3><p>The step-by-step process for generating a new key of your own, instead of relying only on a password.</p></div>
+<div class="meta">19 min</div>
+</a>
+<a class="au" href="curso.html#aula-7">
+<div class="num">7</div>
+<div><h3>Adding your key to the VPS, step by step</h3><p>The complete sequence — from the key on your PC to connecting without ever typing a password again.</p></div>
+<div class="meta">21 min</div>
+</a>
+<a class="au" href="curso.html#aula-8">
+<div class="num">8</div>
+<div><h3>Shortcuts with the config file</h3><p>Stop typing the IP and key path every time—connect with just a nickname.</p></div>
+<div class="meta">16 min</div>
+</a>
+<a class="au" href="curso.html#aula-9">
+<div class="num">9</div>
+<div><h3>Solving the most common errors</h3><p>"Permission denied," connection refused, old key — how to diagnose each one.</p></div>
+<div class="meta">19 min</div>
+</a>
+</div>
+<p style="margin-top:28px"><a class="cta" href="curso.html#trilha">see the full guide →</a></p>
+</div></section>
+<footer><div class="wrap">SSH and SSH Keys · INEMA.CLUB PRO</div></footer>
+</body>
+</html>
