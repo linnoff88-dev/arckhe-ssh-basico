@@ -11,8 +11,8 @@
 ## Global Constraints
 
 - No test framework exists in this codebase (static HTML/CSS/JS, no npm/build step) — "tests" in this plan are grep-based structural checks (mirroring the checklist-portêo greps already used to validate `ssh-basico`) plus one manual browser check at the end. There is no `pytest`/`jest` to run.
-- Two locations must both be edited for every skill-level change: the skill itself (`~/.claude/skills/formato-curso-v5/` — a **symlink** to `~/projetos/formato-curso-inema/formato-curso-v5/`, which IS a git repo; work happens on branch `v5-enhancements`, off `main`) and the course (`~/projetos/ssh-basico/`, a separate git repo, worked on directly on `main`). Editing through the symlink path writes through to the real file — either path works, but commits happen in `~/projetos/formato-curso-inema/`.
-- Every task commits its own change individually (standard implementer step 4) — this keeps each task reviewer's diff scoped to exactly that task, per `subagent-driven-development`'s design. Task 9 additionally pushes `formato-curso-inema`'s `v5-enhancements` branch (closing out Part A); Task 20 additionally pushes `ssh-basico`'s `main` (closing out Part B) — intermediate tasks commit locally without pushing.
+- Two locations must both be edited for every skill-level change: the skill itself (`~/.claude/skills/formato-curso-v5/` — a **symlink** to `~/projetos/formato-curso-ARCKHÉ/formato-curso-v5/`, which IS a git repo; work happens on branch `v5-enhancements`, off `main`) and the course (`~/projetos/ssh-basico/`, a separate git repo, worked on directly on `main`). Editing through the symlink path writes through to the real file — either path works, but commits happen in `~/projetos/formato-curso-ARCKHÉ/`.
+- Every task commits its own change individually (standard implementer step 4) — this keeps each task reviewer's diff scoped to exactly that task, per `subagent-driven-development`'s design. Task 9 additionally pushes `formato-curso-ARCKHÉ`'s `v5-enhancements` branch (closing out Part A); Task 20 additionally pushes `ssh-basico`'s `main` (closing out Part B) — intermediate tasks commit locally without pushing.
 - `curso.js` is a single IIFE using `var`, `function(){}` and jQuery-less DOM APIs throughout — new code must match this style (no `const`/`let`/arrow functions/template literals), or it will look inconsistent next to 800+ existing lines in the same style.
 - Never touch the router, `norm()`/base state, trilho (`activateFor`/IntersectionObserver), grifo/highlight, or SM-2 quiz logic — per `SKILL.md`'s "Proibido tocar" list. All new code is additive.
 - `.termdemo` must carry the `fig` class too (`class="fig termdemo"`) in the rail so it's picked up for free by the existing trilho fade-in/highlight logic — do not write new JS for its entrance animation.
@@ -62,7 +62,7 @@ Expected: `17` (one for each class reference above, `.fig.termdemo` counts as 1 
 - [ ] **Step 3: Commit**
 
 ```bash
-cd ~/projetos/formato-curso-inema
+cd ~/projetos/formato-curso-ARCKHÉ
 git add formato-curso-v5/assets/aula.css
 git commit -m "feat(v5): add .termdemo CSS (terminal-demo component)"
 ```
@@ -510,8 +510,8 @@ Using Edit, find:
 
 ```
 <header class="top"><div class="wrap">
-  <a class="mark" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
-  <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  <a class="mark" href="https://ARCKHÉ AI" target="_blank" rel="noopener">ARCKHÉ AI</a>
+  <a class="pro" href="https://ARCKHÉ.pro" target="_blank" rel="noopener">PRO</a>
 </div></header>
 ```
 
@@ -519,8 +519,8 @@ Replace with:
 
 ```
 <header class="top"><div class="wrap">
-  <a class="mark" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
-  <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  <a class="mark" href="https://ARCKHÉ AI" target="_blank" rel="noopener">ARCKHÉ AI</a>
+  <a class="pro" href="https://ARCKHÉ.pro" target="_blank" rel="noopener">PRO</a>
   <span class="course">Nome do curso</span>
 </div></header>
 ```
@@ -652,7 +652,7 @@ Expected: all four commands return a number ≥ `1`.
 - [ ] **Step 6: Commit and push — closes Part A**
 
 ```bash
-cd ~/projetos/formato-curso-inema
+cd ~/projetos/formato-curso-ARCKHÉ
 git add formato-curso-v5/SKILL.md formato-curso-v5/references/V5-DESIGN.md formato-curso-v5/references/CHECKLIST-V5.md
 git commit -m "docs(v5): document .termdemo and refazer-exercícios"
 git push origin v5-enhancements
@@ -1623,8 +1623,8 @@ Using Edit, find:
 
 ```
 <header class="top"><div class="wrap">
-  <a class="mark" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
-  <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  <a class="mark" href="https://ARCKHÉ AI" target="_blank" rel="noopener">ARCKHÉ AI</a>
+  <a class="pro" href="https://ARCKHÉ.pro" target="_blank" rel="noopener">PRO</a>
 </div></header>
 ```
 
@@ -1632,8 +1632,8 @@ Replace with:
 
 ```
 <header class="top"><div class="wrap">
-  <a class="mark" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
-  <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  <a class="mark" href="https://ARCKHÉ AI" target="_blank" rel="noopener">ARCKHÉ AI</a>
+  <a class="pro" href="https://ARCKHÉ.pro" target="_blank" rel="noopener">PRO</a>
   <span class="course">SSH e Chaves SSH</span>
 </div></header>
 ```
@@ -1748,7 +1748,7 @@ git push origin main
 
 - [ ] **Step 6: Report to the user**
 
-State plainly: (a) the skill commit SHA on `formato-curso-inema`'s `v5-enhancements` branch (from Part A Task 9) and that it's pushed; (b) the course commit SHA on `ssh-basico`'s `main` and confirmation of `git push`; (c) the manual browser check results from Step 4; (d) that deploy to GitHub Pages is automatic (per project convention — do not poll or check Vercel/Pages status); (e) that `v5-enhancements` still needs a merge to `main` in `formato-curso-inema` to take effect for future courses — ask the user whether to merge now or leave it open for further review.
+State plainly: (a) the skill commit SHA on `formato-curso-ARCKHÉ`'s `v5-enhancements` branch (from Part A Task 9) and that it's pushed; (b) the course commit SHA on `ssh-basico`'s `main` and confirmation of `git push`; (c) the manual browser check results from Step 4; (d) that deploy to GitHub Pages is automatic (per project convention — do not poll or check Vercel/Pages status); (e) that `v5-enhancements` still needs a merge to `main` in `formato-curso-ARCKHÉ` to take effect for future courses — ask the user whether to merge now or leave it open for further review.
 
 ---
 

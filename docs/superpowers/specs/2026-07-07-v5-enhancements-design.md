@@ -162,7 +162,7 @@ uma classe nova `.fecho-wrap` com as mesmas regras de largura. Aplicar tanto no
 ### Nome do curso ausente no header do `landing.html`
 
 `landing-template.html` (skill) e `landing.html` (este curso) só mostram
-`INEMA.CLUB` + `PRO` no header. Fix: adicionar um terceiro item, o nome do curso, no
+`ARCKHÉ AI` + `PRO` no header. Fix: adicionar um terceiro item, o nome do curso, no
 mesmo padrêo visual do `.course` que já existe no `curso.html` (link mudo, sem href — ou
 com href pra própria landing, já que é a home).
 
