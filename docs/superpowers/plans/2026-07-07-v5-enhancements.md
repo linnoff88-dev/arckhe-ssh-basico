@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- No test framework exists in this codebase (static HTML/CSS/JS, no npm/build step) — "tests" in this plan are grep-based structural checks (mirroring the checklist-portão greps already used to validate `ssh-basico`) plus one manual browser check at the end. There is no `pytest`/`jest` to run.
+- No test framework exists in this codebase (static HTML/CSS/JS, no npm/build step) — "tests" in this plan are grep-based structural checks (mirroring the checklist-portêo greps already used to validate `ssh-basico`) plus one manual browser check at the end. There is no `pytest`/`jest` to run.
 - Two locations must both be edited for every skill-level change: the skill itself (`~/.claude/skills/formato-curso-v5/` — a **symlink** to `~/projetos/formato-curso-inema/formato-curso-v5/`, which IS a git repo; work happens on branch `v5-enhancements`, off `main`) and the course (`~/projetos/ssh-basico/`, a separate git repo, worked on directly on `main`). Editing through the symlink path writes through to the real file — either path works, but commits happen in `~/projetos/formato-curso-inema/`.
 - Every task commits its own change individually (standard implementer step 4) — this keeps each task reviewer's diff scoped to exactly that task, per `subagent-driven-development`'s design. Task 9 additionally pushes `formato-curso-inema`'s `v5-enhancements` branch (closing out Part A); Task 20 additionally pushes `ssh-basico`'s `main` (closing out Part B) — intermediate tasks commit locally without pushing.
 - `curso.js` is a single IIFE using `var`, `function(){}` and jQuery-less DOM APIs throughout — new code must match this style (no `const`/`let`/arrow functions/template literals), or it will look inconsistent next to 800+ existing lines in the same style.
@@ -36,7 +36,7 @@ Append this exact block to the end of `~/.claude/skills/formato-curso-v5/assets/
 
 ```css
 
-/* ---- termdemo: demo real de comando, 2ª opção pro slot de figura do step (v5 delta) ---- */
+/* ---- termdemo: demo real de comando, 2ª opçêo pro slot de figura do step (v5 delta) ---- */
 .termdemo{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 .fig.termdemo{position:absolute;inset:0;padding:24px}
 .termdemo-reveal{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted);background:var(--panel2);border:1px solid var(--line2);border-radius:99px;padding:10px 18px;cursor:pointer;transition:border-color .2s,color .2s}
@@ -239,7 +239,7 @@ Replace with:
 Using Edit, find this exact block (the per-aula recap box injection):
 
 ```
-  // ---- recap ativo no fim da aula (fecha com recordação) ----
+  // ---- recap ativo no fim da aula (fecha com recordaçêo) ----
   document.querySelectorAll('.view[data-aula] .col').forEach(function(col){ var k=aulaOf(col); if(!k||col.querySelector('.recap')) return;
     var box=el('div','recap'); box.innerHTML='<p class="rk">Feche a aula</p><p class="rtext">Revise agora, com recorda&ccedil;&atilde;o ativa &mdash; depois estes cart&otilde;es voltam sozinhos na hora certa. A revis&atilde;o da trilha (bot&atilde;o <b>revisar</b> no topo) mistura as perguntas de <b>todas</b> as aulas.</p>';
     var b=el('button','big'); b.textContent='revisar os cartões desta aula'; b.addEventListener('click',function(){ reviewAula(k); }); box.appendChild(b); col.appendChild(box);
@@ -249,7 +249,7 @@ Using Edit, find this exact block (the per-aula recap box injection):
 Replace with:
 
 ```
-  // ---- recap ativo no fim da aula (fecha com recordação) ----
+  // ---- recap ativo no fim da aula (fecha com recordaçêo) ----
   document.querySelectorAll('.view[data-aula] .col').forEach(function(col){ var k=aulaOf(col); if(!k||col.querySelector('.recap')) return;
     var box=el('div','recap'); box.innerHTML='<p class="rk">Feche a aula</p><p class="rtext">Revise agora, com recorda&ccedil;&atilde;o ativa &mdash; depois estes cart&otilde;es voltam sozinhos na hora certa. A revis&atilde;o da trilha (bot&atilde;o <b>revisar</b> no topo) mistura as perguntas de <b>todas</b> as aulas.</p>';
     var b=el('button','big'); b.textContent='revisar os cartões desta aula'; b.addEventListener('click',function(){ reviewAula(k); }); box.appendChild(b);
@@ -397,7 +397,7 @@ Then find:
 <div class="next-action">
   <p class="nak">Seu próximo passo</p>
   <p class="na-win">Você acabou de conseguir [microvitória nomeada].</p>
-  <p class="na-action">Nos próximos 15 minutos, no seu trabalho de verdade: [microação concreta].</p>
+  <p class="na-action">Nos próximos 15 minutos, no seu trabalho de verdade: [microaçêo concreta].</p>
   <p class="na-hook">Na próxima aula, você resolve [a próxima dor real que trava quem já passou por esta].</p>
 </div>
 ```
@@ -408,7 +408,7 @@ Replace with:
 <div class="next-action">
   <p class="nak">Seu próximo passo</p>
   <p class="na-win">Você acabou de conseguir [microvitória nomeada].</p>
-  <p class="na-action">Nos próximos 15 minutos, no seu trabalho de verdade: [microação concreta].</p>
+  <p class="na-action">Nos próximos 15 minutos, no seu trabalho de verdade: [microaçêo concreta].</p>
   <p class="na-hook">Na próxima aula, você resolve [a próxima dor real que trava quem já passou por esta].</p>
 </div>
 </div>
@@ -425,7 +425,7 @@ Using Edit, find this exact rail figure (step 2's diagram, inside `.figstage`):
 Replace with:
 
 ```
-      <!-- .termdemo — 2ª opção pro slot de figura: use quando o step tiver um comando real. Sempre com par certo+erro quando fizer sentido (senão, 1 só .termdemo-cmd sem o botão de toggle). -->
+      <!-- .termdemo — 2ª opçêo pro slot de figura: use quando o step tiver um comando real. Sempre com par certo+erro quando fizer sentido (senêo, 1 só .termdemo-cmd sem o botêo de toggle). -->
       <div class="fig termdemo" data-fig="2" data-cap="<b>Fig.</b> rode o comando e veja a diferença entre o certo e o erro comum">
         <button class="termdemo-reveal" type="button">ver o que acontece →</button>
         <div class="termdemo-body" hidden>
@@ -453,7 +453,7 @@ Also, in the matching step-2 body (in `.col`), replace the empty mobile placehol
 Replace with:
 
 ```
-      <!-- cópia mobile do .termdemo acima — mesmo markup, sem a classe "fig" (não é posicionado em rail aqui) -->
+      <!-- cópia mobile do .termdemo acima — mesmo markup, sem a classe "fig" (nêo é posicionado em rail aqui) -->
       <div class="mobfig">
         <div class="termdemo">
           <button class="termdemo-reveal" type="button">ver o que acontece →</button>
@@ -548,7 +548,7 @@ Expected: `1`
 Using Edit, find this line (the icon table's closing, right before "Registro visual"):
 
 ```
-**Repertório de metáforas candidatas** (adaptar ao tema do curso, nunca copiar verbatim entre cursos): estagiário novo que não conhece a empresa · molde de costura reutilizável · gaveta de ferramentas organizada · receita de bolo com variações · assistente que precisa de contexto para ajudar bem · caderno de receitas de família · placa de sinalização num caminho conhecido. Banco completo de analogias por profissão vive em `EXEMPLOS-PROFISSOES.md`.
+**Repertório de metáforas candidatas** (adaptar ao tema do curso, nunca copiar verbatim entre cursos): estagiário novo que nêo conhece a empresa · molde de costura reutilizável · gaveta de ferramentas organizada · receita de bolo com variações · assistente que precisa de contexto para ajudar bem · caderno de receitas de família · placa de sinalizaçêo num caminho conhecido. Banco completo de analogias por profissêo vive em `EXEMPLOS-PROFISSOES.md`.
 ```
 
 That exact text lives in `V5-DESIGN.md`, not `SKILL.md` — this step instead edits `SKILL.md`. Using Edit on `SKILL.md`, find:
@@ -563,15 +563,15 @@ Replace with:
 ## Terceiro registro visual: `.termdemo` (demo real de comando)
 
 Todo step já tem 1 slot de figura na rail (`data-fig`, ver contrato herdado do v4). `.termdemo`
-é uma **segunda opção de conteúdo pra esse mesmo slot** — não é um componente novo sujeito ao
-teto de 9 componentes + 3 quadros nem à regra de contenção AD-7. Use `.termdemo` (classe
+é uma **segunda opçêo de conteúdo pra esse mesmo slot** — nêo é um componente novo sujeito ao
+teto de 9 componentes + 3 quadros nem à regra de contençêo AD-7. Use `.termdemo` (classe
 `fig termdemo` na rail, `class="mobfig"` com cópia idêntica sem a classe `fig` no corpo do
 step, pro mobile) **só quando o step tiver um comando real** — nos demais, use o `.fig` de
-diagrama-de-mecanismo normalmente. Interação: clique-pra-revelar (`.termdemo-reveal`) mostra
+diagrama-de-mecanismo normalmente. Interaçêo: clique-pra-revelar (`.termdemo-reveal`) mostra
 primeiro o par `data-variant="ok"`; um `.termdemo-toggle` alterna pra `data-variant="erro"` —
 só um visível por vez. **Use o par certo+erro só quando existir um erro comum real e
-plausível** (mesmo critério do `.qerr`, `RETENCAO-V5.md` §4) — senão, omita o segundo
-`.termdemo-cmd` e o botão de toggle, deixando só o comando certo.
+plausível** (mesmo critério do `.qerr`, `RETENCAO-V5.md` §4) — senêo, omita o segundo
+`.termdemo-cmd` e o botêo de toggle, deixando só o comando certo.
 
 ## Prática multi-modo
 ```
@@ -589,10 +589,10 @@ Replace with:
 ```
 ## Refazer exercícios (por aula e pra trilha inteira)
 
-Herdado do motor, ao lado da revisão de cartões (que já existia): (1) **por aula**, um botão
+Herdado do motor, ao lado da revisêo de cartões (que já existia): (1) **por aula**, um botêo
 "refazer exercício desta aula" na mesma caixa de fim de aula onde já mora "revisar os cartões
 desta aula" — zera o progresso da `.practice` daquela aula e rola até ela; (2) **pra trilha
-inteira**, um botão novo na barra do topo ("exercícios") abre um painel listando toda
+inteira**, um botêo novo na barra do topo ("exercícios") abre um painel listando toda
 `.practice` do curso, com "ir até ela" (navega e fecha o painel) e "resetar" (individual, sem
 "resetar tudo") por linha. Sem estado novo — reaproveita `state.aulas[k].tasks`.
 
@@ -604,15 +604,15 @@ inteira**, um botão novo na barra do topo ("exercícios") abre um painel listan
 Using Edit, find:
 
 ```
-**Zero itens da lista proibida de metáfora:** robô humanoide, cérebro-circuito, matrix-rain (chuva de código), aperto de mão humano-robô — são os clichês visuais de IA que não passam no "teste de metáfora" (um profissional de 50 anos se reconhece nessa imagem? não, se reconhece num estagiário, numa gaveta de ferramentas, num molde de costura).
+**Zero itens da lista proibida de metáfora:** robô humanoide, cérebro-circuito, matrix-rain (chuva de código), aperto de mêo humano-robô — sêo os clichês visuais de IA que nêo passam no "teste de metáfora" (um profissional de 50 anos se reconhece nessa imagem? nêo, se reconhece num estagiário, numa gaveta de ferramentas, num molde de costura).
 ```
 
 Replace with:
 
 ```
-**Zero itens da lista proibida de metáfora:** robô humanoide, cérebro-circuito, matrix-rain (chuva de código), aperto de mão humano-robô — são os clichês visuais de IA que não passam no "teste de metáfora" (um profissional de 50 anos se reconhece nessa imagem? não, se reconhece num estagiário, numa gaveta de ferramentas, num molde de costura).
+**Zero itens da lista proibida de metáfora:** robô humanoide, cérebro-circuito, matrix-rain (chuva de código), aperto de mêo humano-robô — sêo os clichês visuais de IA que nêo passam no "teste de metáfora" (um profissional de 50 anos se reconhece nessa imagem? nêo, se reconhece num estagiário, numa gaveta de ferramentas, num molde de costura).
 
-**Terceiro registro — `.termdemo` (demonstração literal de comando):** nem metáfora-do-mundo-real, nem diagrama-de-mecanismo — é a tela real, o comando e a saída tal como aparecem no terminal do aluno. Vive no mesmo slot de figura por step (rail + cópia mobile), só nos steps com comando real, nunca misturado com os outros dois registros no mesmo step.
+**Terceiro registro — `.termdemo` (demonstraçêo literal de comando):** nem metáfora-do-mundo-real, nem diagrama-de-mecanismo — é a tela real, o comando e a saída tal como aparecem no terminal do aluno. Vive no mesmo slot de figura por step (rail + cópia mobile), só nos steps com comando real, nunca misturado com os outros dois registros no mesmo step.
 ```
 
 - [ ] **Step 4: `CHECKLIST-V5.md` — new verification item**
@@ -629,11 +629,11 @@ Replace with:
 ## 5.1. `.termdemo` — cobertura nos steps com comando real
 
 Todo step com `<div class="pcodewrap">` ou um comando citado no corpo do texto deve ter
-`.termdemo` (não `.fig` de diagrama) no mesmo `data-fig`, com cópia idêntica em `.mobfig`
-(sem a classe `fig`). Verificação: `grep -c 'pcodewrap'` vs `grep -c 'class="fig termdemo"'`
+`.termdemo` (nêo `.fig` de diagrama) no mesmo `data-fig`, com cópia idêntica em `.mobfig`
+(sem a classe `fig`). Verificaçêo: `grep -c 'pcodewrap'` vs `grep -c 'class="fig termdemo"'`
 por aula — todo step com `pcodewrap` deve ter um `.termdemo` correspondente, **exceto**
-quando não existir erro comum plausível nem a demonstração fizer sentido isolada (julgamento
-do autor, registrado como decisão, não omissão silenciosa).
+quando nêo existir erro comum plausível nem a demonstraçêo fizer sentido isolada (julgamento
+do autor, registrado como decisêo, nêo omissêo silenciosa).
 
 ## 6. `.gterm` — cobertura do glossário (item herdado do v4, auditoria explícita)
 ```
@@ -792,7 +792,7 @@ Using Edit, find (aula 2's rail, first figure):
 Replace with:
 
 ```
-      <div class="fig termdemo on" data-fig="1" data-cap="<b>Fig.</b> repare na diferença entre -V (maiúsculo, versão) e -v (minúsculo, outra coisa)">
+      <div class="fig termdemo on" data-fig="1" data-cap="<b>Fig.</b> repare na diferença entre -V (maiúsculo, versêo) e -v (minúsculo, outra coisa)">
         <button class="termdemo-reveal" type="button">ver o que acontece →</button>
         <div class="termdemo-body" hidden>
           <div class="termdemo-cmd on" data-variant="ok">
@@ -805,7 +805,7 @@ Replace with:
             <pre class="termdemo-in">$ ssh -v</pre>
             <pre class="termdemo-out termdemo-err">OpenSSH_for_Windows_9.5, LibreSSL 3.9.2
 debug1: Reading configuration data ...
-(-v minúsculo liga o modo detalhado — não é isto que confirma a versão)</pre>
+(-v minúsculo liga o modo detalhado — nêo é isto que confirma a versêo)</pre>
           </div>
           <button class="termdemo-toggle" type="button">ver o erro comum</button>
         </div>
@@ -839,7 +839,7 @@ Replace with:
               <pre class="termdemo-in">$ ssh -v</pre>
               <pre class="termdemo-out termdemo-err">OpenSSH_for_Windows_9.5, LibreSSL 3.9.2
 debug1: Reading configuration data ...
-(-v minúsculo liga o modo detalhado — não é isto que confirma a versão)</pre>
+(-v minúsculo liga o modo detalhado — nêo é isto que confirma a versêo)</pre>
             </div>
             <button class="termdemo-toggle" type="button">ver o erro comum</button>
           </div>
@@ -945,13 +945,13 @@ Replace with:
             <p class="termdemo-k">comando certo</p>
             <pre class="termdemo-in">$ sudo apt update && sudo apt upgrade -y</pre>
             <pre class="termdemo-out">Lendo listas de pacotes... Pronto
-Todos os pacotes estão atualizados.</pre>
+Todos os pacotes estêo atualizados.</pre>
           </div>
           <div class="termdemo-cmd" data-variant="erro">
             <p class="termdemo-k">erro comum</p>
             <pre class="termdemo-in">$ apt update</pre>
             <pre class="termdemo-out termdemo-err">Permission denied (você precisa de privilégio de administrador)
-E: Não é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</pre>
+E: Nêo é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</pre>
           </div>
           <button class="termdemo-toggle" type="button">ver o erro comum</button>
         </div>
@@ -981,13 +981,13 @@ sudo apt update && sudo apt upgrade -y</pre></div>
               <p class="termdemo-k">comando certo</p>
               <pre class="termdemo-in">$ sudo apt update && sudo apt upgrade -y</pre>
               <pre class="termdemo-out">Lendo listas de pacotes... Pronto
-Todos os pacotes estão atualizados.</pre>
+Todos os pacotes estêo atualizados.</pre>
             </div>
             <div class="termdemo-cmd" data-variant="erro">
               <p class="termdemo-k">erro comum</p>
               <pre class="termdemo-in">$ apt update</pre>
               <pre class="termdemo-out termdemo-err">Permission denied (você precisa de privilégio de administrador)
-E: Não é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</pre>
+E: Nêo é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</pre>
             </div>
             <button class="termdemo-toggle" type="button">ver o erro comum</button>
           </div>
@@ -1035,7 +1035,7 @@ Replace with:
           <div class="termdemo-cmd" data-variant="erro">
             <p class="termdemo-k">erro comum</p>
             <pre class="termdemo-in">$ type %USERPROFILE%\.ssh\minha_vps.pub</pre>
-            <pre class="termdemo-out termdemo-err">O sistema não pode encontrar o arquivo especificado.
+            <pre class="termdemo-out termdemo-err">O sistema nêo pode encontrar o arquivo especificado.
 (nome de arquivo errado — confira o nome exato com dir antes)</pre>
           </div>
           <button class="termdemo-toggle" type="button">ver o erro comum</button>
@@ -1068,7 +1068,7 @@ Replace with:
             <div class="termdemo-cmd" data-variant="erro">
               <p class="termdemo-k">erro comum</p>
               <pre class="termdemo-in">$ type %USERPROFILE%\.ssh\minha_vps.pub</pre>
-              <pre class="termdemo-out termdemo-err">O sistema não pode encontrar o arquivo especificado.
+              <pre class="termdemo-out termdemo-err">O sistema nêo pode encontrar o arquivo especificado.
 (nome de arquivo errado — confira o nome exato com dir antes)</pre>
             </div>
             <button class="termdemo-toggle" type="button">ver o erro comum</button>
@@ -1187,7 +1187,7 @@ Replace with:
             <p class="termdemo-k">comando</p>
             <pre class="termdemo-in">$ mkdir -p ~/.ssh
 $ nano ~/.ssh/authorized_keys</pre>
-            <pre class="termdemo-out">(o nano abre uma tela de edição — cole a chave, CTRL+O, Enter, CTRL+X)</pre>
+            <pre class="termdemo-out">(o nano abre uma tela de ediçêo — cole a chave, CTRL+O, Enter, CTRL+X)</pre>
           </div>
         </div>
       </div>
@@ -1213,7 +1213,7 @@ Find:
         <ol>
           <li>Ver e copiar a chave pública no seu computador.</li>
           <li>Entrar na VPS com senha.</li>
-          <li><code>mkdir -p ~/.ssh</code> — criar a pasta, se ainda não existir.</li>
+          <li><code>mkdir -p ~/.ssh</code> — criar a pasta, se ainda nêo existir.</li>
           <li><code>nano ~/.ssh/authorized_keys</code> — colar a chave e salvar (<code>CTRL+O</code>, Enter, <code>CTRL+X</code>).</li>
         </ol>
       </div>
@@ -1230,7 +1230,7 @@ Replace with:
         <ol>
           <li>Ver e copiar a chave pública no seu computador.</li>
           <li>Entrar na VPS com senha.</li>
-          <li><code>mkdir -p ~/.ssh</code> — criar a pasta, se ainda não existir.</li>
+          <li><code>mkdir -p ~/.ssh</code> — criar a pasta, se ainda nêo existir.</li>
           <li><code>nano ~/.ssh/authorized_keys</code> — colar a chave e salvar (<code>CTRL+O</code>, Enter, <code>CTRL+X</code>).</li>
         </ol>
       </div>
@@ -1242,7 +1242,7 @@ Replace with:
               <p class="termdemo-k">comando</p>
               <pre class="termdemo-in">$ mkdir -p ~/.ssh
 $ nano ~/.ssh/authorized_keys</pre>
-              <pre class="termdemo-out">(o nano abre uma tela de edição — cole a chave, CTRL+O, Enter, CTRL+X)</pre>
+              <pre class="termdemo-out">(o nano abre uma tela de ediçêo — cole a chave, CTRL+O, Enter, CTRL+X)</pre>
             </div>
           </div>
         </div>
@@ -1265,7 +1265,7 @@ Using Edit, find:
 Replace with:
 
 ```
-      <div class="fig termdemo" data-fig="3" data-cap="<b>Fig.</b> chmod não mostra nada quando dá certo — o silêncio é o sinal de sucesso">
+      <div class="fig termdemo" data-fig="3" data-cap="<b>Fig.</b> chmod nêo mostra nada quando dá certo — o silêncio é o sinal de sucesso">
         <button class="termdemo-reveal" type="button">ver o que acontece →</button>
         <div class="termdemo-body" hidden>
           <div class="termdemo-cmd on" data-variant="ok">
@@ -1279,7 +1279,7 @@ $ chmod 600 ~/.ssh/authorized_keys</pre>
             <pre class="termdemo-in">$ ssh -i minha_vps root@IP_DA_VPS
 (pulando o chmod)</pre>
             <pre class="termdemo-out termdemo-err">root@IP: Permission denied (publickey,password).
-(a VPS recusa a chave porque as permissões da pasta .ssh estão abertas demais)</pre>
+(a VPS recusa a chave porque as permissões da pasta .ssh estêo abertas demais)</pre>
           </div>
           <button class="termdemo-toggle" type="button">ver o erro comum</button>
         </div>
@@ -1291,14 +1291,14 @@ $ chmod 600 ~/.ssh/authorized_keys</pre>
 Using Edit, find:
 
 ```
-      <p>Ricardo esqueceu esse passo na primeira tentativa e sua chave simplesmente não funcionou — sem nenhuma mensagem de erro clara. Depois de ajustar as permissões, funcionou de primeira.</p>
+      <p>Ricardo esqueceu esse passo na primeira tentativa e sua chave simplesmente nêo funcionou — sem nenhuma mensagem de erro clara. Depois de ajustar as permissões, funcionou de primeira.</p>
       <div class="quiz" data-answer="b">
 ```
 
 Replace with:
 
 ```
-      <p>Ricardo esqueceu esse passo na primeira tentativa e sua chave simplesmente não funcionou — sem nenhuma mensagem de erro clara. Depois de ajustar as permissões, funcionou de primeira.</p>
+      <p>Ricardo esqueceu esse passo na primeira tentativa e sua chave simplesmente nêo funcionou — sem nenhuma mensagem de erro clara. Depois de ajustar as permissões, funcionou de primeira.</p>
       <div class="mobfig">
         <div class="termdemo">
           <button class="termdemo-reveal" type="button">ver o que acontece →</button>
@@ -1314,7 +1314,7 @@ $ chmod 600 ~/.ssh/authorized_keys</pre>
               <pre class="termdemo-in">$ ssh -i minha_vps root@IP_DA_VPS
 (pulando o chmod)</pre>
               <pre class="termdemo-out termdemo-err">root@IP: Permission denied (publickey,password).
-(a VPS recusa a chave porque as permissões da pasta .ssh estão abertas demais)</pre>
+(a VPS recusa a chave porque as permissões da pasta .ssh estêo abertas demais)</pre>
             </div>
             <button class="termdemo-toggle" type="button">ver o erro comum</button>
           </div>
@@ -1328,7 +1328,7 @@ $ chmod 600 ~/.ssh/authorized_keys</pre>
 Using Edit, find:
 
 ```
-      <div class="fig" data-fig="4" data-cap="<b>Fig.</b> conexão com -i: a chave apresentada, sem nenhuma senha pedida"><svg viewBox="0 0 220 200" fill="none" aria-hidden="true">
+      <div class="fig" data-fig="4" data-cap="<b>Fig.</b> conexêo com -i: a chave apresentada, sem nenhuma senha pedida"><svg viewBox="0 0 220 200" fill="none" aria-hidden="true">
         <rect x="30" y="80" width="55" height="40" rx="6" style="stroke:var(--ink-soft)" stroke-width="2"/>
         <rect x="140" y="80" width="55" height="40" rx="6" style="stroke:var(--accent)" stroke-width="2"/>
         <path d="M85 100 L140 100" style="stroke:var(--accent)" stroke-width="2"/>
@@ -1339,7 +1339,7 @@ Using Edit, find:
 Replace with:
 
 ```
-      <div class="fig termdemo" data-fig="4" data-cap="<b>Fig.</b> com a chave certa, não aparece nenhum pedido de senha">
+      <div class="fig termdemo" data-fig="4" data-cap="<b>Fig.</b> com a chave certa, nêo aparece nenhum pedido de senha">
         <button class="termdemo-reveal" type="button">ver o que acontece →</button>
         <div class="termdemo-body" hidden>
           <div class="termdemo-cmd on" data-variant="ok">
@@ -1352,7 +1352,7 @@ root@vps:~#</pre>
             <p class="termdemo-k">erro comum</p>
             <pre class="termdemo-in">$ ssh -i %USERPROFILE%\.ssh\minha_vps root@123.123.123.123</pre>
             <pre class="termdemo-out termdemo-err">root@123.123.123.123's password:
-(ainda pediu senha — a chave não foi aceita: revise o authorized_keys e o chmod)</pre>
+(ainda pediu senha — a chave nêo foi aceita: revise o authorized_keys e o chmod)</pre>
           </div>
           <button class="termdemo-toggle" type="button">ver o erro comum</button>
         </div>
@@ -1366,8 +1366,8 @@ Confirmed exact current content at this location (`curso.html` lines 1155–1161
 ```
       <p>Se tudo estiver certo, Marta entra direto, sem nenhuma tela pedindo senha — só a chave já basta.</p>
       <div class="qbefore-after">
-        <div class="qba-col"><p class="qk">Antes</p><p>Toda conexão pedia a senha, e ela precisava lembrar ou copiar de algum lugar.</p></div>
-        <div class="qba-col"><p class="qk">Depois</p><p>A chave prova quem ela é sozinha — conexão mais rápida e mais segura, sem senha nenhuma.</p></div>
+        <div class="qba-col"><p class="qk">Antes</p><p>Toda conexêo pedia a senha, e ela precisava lembrar ou copiar de algum lugar.</p></div>
+        <div class="qba-col"><p class="qk">Depois</p><p>A chave prova quem ela é sozinha — conexêo mais rápida e mais segura, sem senha nenhuma.</p></div>
       </div>
       <div class="mobfig" data-mobfig="4"></div>
       <button class="readbtn" data-read="s4">marcar como lido</button>
@@ -1378,8 +1378,8 @@ Using Edit, find exactly that block. Replace with:
 ```
       <p>Se tudo estiver certo, Marta entra direto, sem nenhuma tela pedindo senha — só a chave já basta.</p>
       <div class="qbefore-after">
-        <div class="qba-col"><p class="qk">Antes</p><p>Toda conexão pedia a senha, e ela precisava lembrar ou copiar de algum lugar.</p></div>
-        <div class="qba-col"><p class="qk">Depois</p><p>A chave prova quem ela é sozinha — conexão mais rápida e mais segura, sem senha nenhuma.</p></div>
+        <div class="qba-col"><p class="qk">Antes</p><p>Toda conexêo pedia a senha, e ela precisava lembrar ou copiar de algum lugar.</p></div>
+        <div class="qba-col"><p class="qk">Depois</p><p>A chave prova quem ela é sozinha — conexêo mais rápida e mais segura, sem senha nenhuma.</p></div>
       </div>
       <div class="mobfig">
         <div class="termdemo">
@@ -1395,7 +1395,7 @@ root@vps:~#</pre>
               <p class="termdemo-k">erro comum</p>
               <pre class="termdemo-in">$ ssh -i %USERPROFILE%\.ssh\minha_vps root@123.123.123.123</pre>
               <pre class="termdemo-out termdemo-err">root@123.123.123.123's password:
-(ainda pediu senha — a chave não foi aceita: revise o authorized_keys e o chmod)</pre>
+(ainda pediu senha — a chave nêo foi aceita: revise o authorized_keys e o chmod)</pre>
             </div>
             <button class="termdemo-toggle" type="button">ver o erro comum</button>
           </div>
@@ -1432,7 +1432,7 @@ Using Edit, find:
 Replace with:
 
 ```
-      <div class="fig termdemo" data-fig="2" data-cap="<b>Fig.</b> config bem recuado conecta pelo apelido; mal recuado, não reconhece o host">
+      <div class="fig termdemo" data-fig="2" data-cap="<b>Fig.</b> config bem recuado conecta pelo apelido; mal recuado, nêo reconhece o host">
         <button class="termdemo-reveal" type="button">ver o que acontece →</button>
         <div class="termdemo-body" hidden>
           <div class="termdemo-cmd on" data-variant="ok">
@@ -1445,7 +1445,7 @@ root@vps:~#</pre>
             <p class="termdemo-k">erro comum</p>
             <pre class="termdemo-in">$ ssh hostinger</pre>
             <pre class="termdemo-out termdemo-err">ssh: Could not resolve hostname hostinger: Name or service not known
-(o arquivo config existe, mas as linhas abaixo de "Host" não estavam recuadas)</pre>
+(o arquivo config existe, mas as linhas abaixo de "Host" nêo estavam recuadas)</pre>
           </div>
           <button class="termdemo-toggle" type="button">ver o erro comum</button>
         </div>
@@ -1459,7 +1459,7 @@ Using Edit, find:
 ```
       <div class="qerr">
         <p class="qk">Erro comum</p>
-        <p class="qerr-txt"><b>Esquecer o recuo (espaços) antes de cada linha depois de "Host".</b> O arquivo config segue um formato onde as linhas de baixo do "Host" precisam estar recuadas — sem isso, a conexão pelo apelido não funciona.</p>
+        <p class="qerr-txt"><b>Esquecer o recuo (espaços) antes de cada linha depois de "Host".</b> O arquivo config segue um formato onde as linhas de baixo do "Host" precisam estar recuadas — sem isso, a conexêo pelo apelido nêo funciona.</p>
       </div>
       <div class="mobfig" data-mobfig="2"></div>
       <button class="readbtn" data-read="s2">marcar como lido</button>
@@ -1470,7 +1470,7 @@ Replace with:
 ```
       <div class="qerr">
         <p class="qk">Erro comum</p>
-        <p class="qerr-txt"><b>Esquecer o recuo (espaços) antes de cada linha depois de "Host".</b> O arquivo config segue um formato onde as linhas de baixo do "Host" precisam estar recuadas — sem isso, a conexão pelo apelido não funciona.</p>
+        <p class="qerr-txt"><b>Esquecer o recuo (espaços) antes de cada linha depois de "Host".</b> O arquivo config segue um formato onde as linhas de baixo do "Host" precisam estar recuadas — sem isso, a conexêo pelo apelido nêo funciona.</p>
       </div>
       <div class="mobfig">
         <div class="termdemo">
@@ -1486,7 +1486,7 @@ root@vps:~#</pre>
               <p class="termdemo-k">erro comum</p>
               <pre class="termdemo-in">$ ssh hostinger</pre>
               <pre class="termdemo-out termdemo-err">ssh: Could not resolve hostname hostinger: Name or service not known
-(o arquivo config existe, mas as linhas abaixo de "Host" não estavam recuadas)</pre>
+(o arquivo config existe, mas as linhas abaixo de "Host" nêo estavam recuadas)</pre>
             </div>
             <button class="termdemo-toggle" type="button">ver o erro comum</button>
           </div>
@@ -1536,7 +1536,7 @@ Replace with:
             <p class="termdemo-k">erro comum</p>
             <pre class="termdemo-in">$ systemctl status sshd</pre>
             <pre class="termdemo-out termdemo-err">Unit sshd.service could not be found.
-(neste sistema o serviço se chama "ssh", não "sshd" — tente o outro nome)</pre>
+(neste sistema o serviço se chama "ssh", nêo "sshd" — tente o outro nome)</pre>
           </div>
           <button class="termdemo-toggle" type="button">ver o erro comum</button>
         </div>
@@ -1574,7 +1574,7 @@ sudo systemctl start ssh</pre></div>
               <p class="termdemo-k">erro comum</p>
               <pre class="termdemo-in">$ systemctl status sshd</pre>
               <pre class="termdemo-out termdemo-err">Unit sshd.service could not be found.
-(neste sistema o serviço se chama "ssh", não "sshd" — tente o outro nome)</pre>
+(neste sistema o serviço se chama "ssh", nêo "sshd" — tente o outro nome)</pre>
             </div>
             <button class="termdemo-toggle" type="button">ver o erro comum</button>
           </div>
@@ -1651,7 +1651,7 @@ Expected: `1`
 
 **Files:** none modified (verification + git only).
 
-- [ ] **Step 1: Re-run the full original checklist-portão (must still all pass after the retrofit)**
+- [ ] **Step 1: Re-run the full original checklist-portêo (must still all pass after the retrofit)**
 
 ```bash
 cd ~/projetos/ssh-basico

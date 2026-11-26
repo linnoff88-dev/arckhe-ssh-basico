@@ -112,7 +112,7 @@ details p{font-size:16px}
 .quiz .qfb{margin:8px 0 0;font-size:14px;color:var(--muted);min-height:0}
 .quiz .qfb.on{margin-top:12px}
 
-/* pratique agora (mão na massa, passos verificáveis) */
+/* pratique agora (mêo na massa, passos verificáveis) */
 .practice{margin:8vh 0 0;border:1px solid var(--line);border-radius:18px;background:linear-gradient(180deg,var(--panel),var(--bg2));padding:26px 28px}
 .practice .pk{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 10px;display:flex;align-items:center;gap:12px}
 .practice .pcount{color:var(--faint);letter-spacing:.04em}
@@ -191,7 +191,7 @@ footer{max-width:1160px;margin:0 auto;padding:0 clamp(24px,5vw,60px) 14vh;color:
 .grade button:hover{border-color:var(--accent)}
 .revempty{color:var(--muted);text-align:center;padding:40px 0;font-family:var(--serif);font-style:italic}
 
-/* editor de cartão (reformular o grifo antes de salvar) */
+/* editor de cartêo (reformular o grifo antes de salvar) */
 .cedit{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:82;width:min(460px,92vw);max-height:88vh;overflow-y:auto;background:var(--bg2);border:1px solid var(--line2);border-radius:18px;padding:24px 24px 20px;display:none;box-shadow:0 24px 60px rgba(0,0,0,.5)}
 .cedit.on{display:block}
 .cedit h3{font-family:var(--serif);font-weight:500;font-size:22px;margin:0 0 2px}
@@ -251,13 +251,13 @@ footer{max-width:1160px;margin:0 auto;padding:0 clamp(24px,5vw,60px) 14vh;color:
 .codewrap{position:relative;margin:26px 0}
 .codewrap pre{margin:0}
 
-/* glossário sob demanda (termo com definição no hover/foco) */
+/* glossário sob demanda (termo com definiçêo no hover/foco) */
 .gterm{position:relative;border-bottom:1px dotted currentColor;cursor:help}
 .gterm:focus{outline:none;color:var(--accent)}
 .gterm::after{content:attr(data-def);position:absolute;left:0;bottom:calc(100% + 8px);z-index:45;width:max-content;max-width:min(280px,72vw);background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:10px 12px;font-family:var(--sans);font-size:13px;font-weight:400;font-style:normal;line-height:1.45;color:var(--ink-soft);box-shadow:0 12px 34px rgba(0,0,0,.45);white-space:normal;opacity:0;visibility:hidden;transform:translateY(4px);transition:opacity .18s,transform .18s,visibility .18s;pointer-events:none}
 .gterm:hover::after,.gterm:focus::after{opacity:1;visibility:visible;transform:none}
 
-/* reflexão / nota por seção */
+/* reflexêo / nota por seçêo */
 .reflect{border-top:1px solid var(--line);border-bottom:none;padding:0;margin:18px 0 0}
 .reflect summary{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:12px 0;cursor:pointer;list-style:none}
 .reflect summary::-webkit-details-marker{display:none}
@@ -283,7 +283,7 @@ footer{max-width:1160px;margin:0 auto;padding:0 clamp(24px,5vw,60px) 14vh;color:
 html[data-theme="papel"] .subnav a,html[data-theme="sepia"] .subnav a{background:rgba(255,255,255,.5)}
 .subnav a:hover{color:var(--ink);border-color:var(--accent)}
 .subnav a.cur{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
-/* restaura o fundo/cor do chip atual nos temas claros — senão o override de .subnav a (papel/sépia) clobbera o fundo e o texto (accent-ink=branco) some */
+/* restaura o fundo/cor do chip atual nos temas claros — senêo o override de .subnav a (papel/sépia) clobbera o fundo e o texto (accent-ink=branco) some */
 html[data-theme="papel"] .subnav a.cur,html[data-theme="sepia"] .subnav a.cur{background:var(--accent);color:var(--accent-ink)}
 .subnav a.soon{opacity:.55}
 
@@ -346,7 +346,7 @@ html[data-theme="papel"] .subnav a.cur,html[data-theme="sepia"] .subnav a.cur{ba
 .recap-autor li{position:relative;padding-left:22px;margin:0 0 10px;color:var(--ink-soft);font-size:15.5px;line-height:1.6}
 .recap-autor li::before{content:"—";position:absolute;left:0;color:var(--accent)}
 
-/* --- 7: microação + gancho --- */
+/* --- 7: microaçêo + gancho --- */
 .next-action{margin:22px 0 0;padding:18px 20px;border:1px solid var(--accent-dim);border-radius:14px;background:rgba(124,224,198,.06)}
 html[data-theme="papel"] .next-action,html[data-theme="sepia"] .next-action{background:rgba(15,122,97,.06)}
 .next-action .nak{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
@@ -354,7 +354,7 @@ html[data-theme="papel"] .next-action,html[data-theme="sepia"] .next-action{back
 .next-action .na-action{font-size:15px;color:var(--ink-soft);margin:0 0 8px;line-height:1.55}
 .next-action .na-hook{font-size:14px;color:var(--muted);font-style:italic;margin:0}
 
-/* --- 8: tipo (fundamento/ferramenta) + versão --- */
+/* --- 8: tipo (fundamento/ferramenta) + versêo --- */
 .step[data-kind]{position:relative}
 .step[data-kind] h2::after{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;vertical-align:middle;margin-left:10px;padding:3px 8px;border-radius:99px;border:1px solid var(--line2);color:var(--muted)}
 .step[data-kind="fundamento"] h2::after{content:"● fundamento"}
@@ -362,7 +362,7 @@ html[data-theme="papel"] .next-action,html[data-theme="sepia"] .next-action{back
 .data-versao,[data-versao]::before{font-family:var(--mono);font-size:10.5px;color:var(--warm)}
 .step[data-versao] h2::before{content:attr(data-versao);display:block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:var(--warm);margin-bottom:6px}
 
-/* --- quadros: aplicação / passo-a-passo / frase-âncora --- */
+/* --- quadros: aplicaçêo / passo-a-passo / frase-âncora --- */
 .qapply{margin:26px 0 0;padding:18px 20px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
 .qapply .qak{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 10px}
 .qapply ul{list-style:none;margin:0;padding:0}
@@ -416,7 +416,7 @@ html[data-theme="papel"] .next-action,html[data-theme="sepia"] .next-action{back
 /* --- estado tempo+estado no card da trilha (.au .meta já existe; só adiciona o ícone) --- */
 .au .meta .ic-concluida,.au .meta .ic-andamento,.au .meta .ic-pendente{margin-right:2px}
 
-/* --- print mínimo (D-08 — nada quebra grosseiramente; sem suporte real de paginação) --- */
+/* --- print mínimo (D-08 — nada quebra grosseiramente; sem suporte real de paginaçêo) --- */
 @media print{
   .bar,.prog,.grain,.panel,.scrim,.cedit,.prefs,.welcome,.seltb,.readbtn,.pcopy,.subnav{display:none!important}
   body{background:#fff!important;color:#111!important}
@@ -424,7 +424,7 @@ html[data-theme="papel"] .next-action,html[data-theme="sepia"] .next-action{back
   a{color:#111!important;text-decoration:underline}
 }
 
-/* ---- termdemo: demo real de comando, 2ª opção pro slot de figura do step (v5 delta) ---- */
+/* ---- termdemo: demo real de comando, 2ª opçêo pro slot de figura do step (v5 delta) ---- */
 .termdemo{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 .fig.termdemo{position:absolute;inset:0;padding:24px}
 .termdemo-reveal{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:var(--muted);background:var(--panel2);border:1px solid var(--line2);border-radius:99px;padding:10px 18px;cursor:pointer;transition:border-color .2s,color .2s}

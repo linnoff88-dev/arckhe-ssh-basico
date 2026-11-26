@@ -13,12 +13,12 @@
 <script>(function(){try{var m=document.querySelector('meta[name=curso]');var CK=(m&&m.content)||'v5:curso';var s=JSON.parse(localStorage.getItem(CK));if(s&&s.prefs&&s.prefs.theme)document.documentElement.setAttribute('data-theme',s.prefs.theme);}catch(e){}})();</script>
 <!--
   PROTOCOLO DE DESCOBERTA (formato-curso-v5, Passo 0 — bloqueante, registrado como metadado):
-  - Público específico: pessoas em geral, de jovens a 40+, sem conhecimento técnico prévio, que já rodam uma automação (ex.: n8n) numa VPS e às vezes precisam mexer nela sem esperar suporte.
-  - Profissões-alvo (≥2): Marta, dona de salão de beleza (automação de confirmação de horário por WhatsApp rodando numa VPS) · Ricardo, dono de loja de roupas (automação que posta novidades de coleção, também numa VPS).
+  - Público específico: pessoas em geral, de jovens a 40+, sem conhecimento técnico prévio, que já rodam uma automaçêo (ex.: n8n) numa VPS e às vezes precisam mexer nela sem esperar suporte.
+  - Profissões-alvo (≥2): Marta, dona de salêo de beleza (automaçêo de confirmaçêo de horário por WhatsApp rodando numa VPS) · Ricardo, dono de loja de roupas (automaçêo que posta novidades de coleçêo, também numa VPS).
   - Familiaridade com tecnologia: nenhuma — nunca abriram um terminal antes desta trilha.
-  - Resultado prático esperado: conectar na própria VPS pelo terminal do Windows, criar e usar uma chave SSH, colocar a chave na VPS e resolver sozinho os erros de conexão mais comuns, sem depender de suporte técnico.
-  - Tempo por sessão: 15–20 minutos.
-  Decisão de processo registrada: o assunto desta trilha É o uso do terminal/SSH — por isso "terminal", "servidor", "diretório" etc. são tratados como jargão de DOMÍNIO deste curso específico (definidos inline + .gterm), não como jargão de plataforma a eliminar. Pelo mesmo motivo, a prática usa o modo "codigo" (herança v4, permitida em cursos técnicos) na maioria das aulas — é a própria habilidade sendo ensinada — variando para o modo "analise" nas duas aulas que são puramente conceituais/diagnósticas (aula 1 e aula 9).
+  - Resultado prático esperado: conectar na própria VPS pelo terminal do Windows, criar e usar uma chave SSH, colocar a chave na VPS e resolver sozinho os erros de conexêo mais comuns, sem depender de suporte técnico.
+  - Tempo por sessêo: 15–20 minutos.
+  Decisêo de processo registrada: o assunto desta trilha É o uso do terminal/SSH — por isso "terminal", "servidor", "diretório" etc. sêo tratados como jargêo de DOMÍNIO deste curso específico (definidos inline + .gterm), nêo como jargêo de plataforma a eliminar. Pelo mesmo motivo, a prática usa o modo "codigo" (herança v4, permitida em cursos técnicos) na maioria das aulas — é a própria habilidade sendo ensinada — variando para o modo "analise" nas duas aulas que sêo puramente conceituais/diagnósticas (aula 1 e aula 9).
 -->
 <style>
   .view{display:none}.view.active{display:block}
@@ -219,7 +219,7 @@
 <circle cx="24" cy="100" r="5" stroke-width="2" style="stroke:var(--ink-soft)"></circle>
 <circle cx="24" cy="140" r="5" stroke-width="2" style="stroke:var(--ink-soft)"></circle>
 </svg></div>
-<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; os 4 elementos: cliente, servidor, IP e autenticação, sempre juntos" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; os 4 elementos: cliente, servidor, IP e autenticaçêo, sempre juntos" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
 <rect height="40" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="85" x="15" y="20"></rect>
 <rect height="40" rx="8" stroke-width="2" style="stroke:var(--accent)" width="85" x="120" y="20"></rect>
 <rect height="40" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="85" x="15" y="140"></rect>
@@ -277,7 +277,7 @@
   [OK] recap-autor        .recap-autor no fecho (1)
   [OK] next-action        .next-action no fecho (1)
   [OK] cards              <script id="cards-1"> presente (1)
-  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operaçêo)
   [OK] teste-se-FUND      tipo=FUNDAMENTO: presente (1 quiz data-fb)
 -->
 </section>
@@ -321,7 +321,7 @@
 <pre class="termdemo-in">$ ssh -v</pre>
 <pre class="termdemo-out termdemo-err">OpenSSH_for_Windows_9.5, LibreSSL 3.9.2
 debug1: Reading configuration data ...
-(-v minúsculo liga o modo detalhado — não é isto que confirma a versão)</pre>
+(-v minúsculo liga o modo detalhado — nêo é isto que confirma a versêo)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
@@ -346,7 +346,7 @@ debug1: Reading configuration data ...
 <p>The first time anyone connects to a new VPS, a question appears: <code>Are you sure you want to continue connecting?</code>. This is the computer confirming that you recognize this server—type <code>yes</code> and press Enter.</p>
 <div class="quiz" data-answer="a">
 <p class="qk">Test yourself</p><p class="q">Does this confirmation prompt appear every time you connect, or only the first time with that VPS?</p>
-<button class="opt" data-fb="Depois da primeira confirmação, o computador guarda essa 'assinatura' da VPS e não pergunta de novo, a menos que ela mude (a aula 9 explica esse caso)." data-k="a">Only the first time with that VPS.</button>
+<button class="opt" data-fb="Depois da primeira confirmaçêo, o computador guarda essa 'assinatura' da VPS e nêo pergunta de novo, a menos que ela mude (a aula 9 explica esse caso)." data-k="a">Only the first time with that VPS.</button>
 <button class="opt" data-k="b">Every time you connect.</button>
 <p class="qfb"></p>
 </div>
@@ -385,7 +385,7 @@ ssh usuario@IP_DA_VPS</pre></div>
 </div>
 <aside class="rail"><div class="railsticky">
 <div class="figstage">
-<div class="fig termdemo on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; repare na diferença entre -V (maiúsculo, versão) e -v (minúsculo, outra coisa)" data-fig="1">
+<div class="fig termdemo on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; repare na diferença entre -V (maiúsculo, versêo) e -v (minúsculo, outra coisa)" data-fig="1">
 <button class="termdemo-reveal" type="button">see what happens →</button>
 <div class="termdemo-body" hidden="">
 <div class="termdemo-cmd on" data-variant="ok">
@@ -398,7 +398,7 @@ ssh usuario@IP_DA_VPS</pre></div>
 <pre class="termdemo-in">$ ssh -v</pre>
 <pre class="termdemo-out termdemo-err">OpenSSH_for_Windows_9.5, LibreSSL 3.9.2
 debug1: Reading configuration data ...
-(-v minúsculo liga o modo detalhado — não é isto que confirma a versão)</pre>
+(-v minúsculo liga o modo detalhado — nêo é isto que confirma a versêo)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
@@ -409,7 +409,7 @@ debug1: Reading configuration data ...
 <path d="M138 62 L150 70 L138 78" fill="none" stroke-width="2" style="stroke:var(--accent)"></path>
 <rect height="60" rx="8" stroke-width="2" style="stroke:var(--accent)" width="60" x="150" y="40"></rect>
 </svg></div>
-<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; a 1ª conexão pede uma confirmação; da 2ª em diante, ela não volta" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; a 1ª conexêo pede uma confirmaçêo; da 2ª em diante, ela nêo volta" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
 <circle cx="60" cy="100" r="35" stroke-width="2" style="stroke:var(--accent)"></circle>
 <text font-size="11" style="fill:var(--accent)" x="42" y="105">yes</text>
 <path d="M100 100 L170 100" stroke-dasharray="4 4" stroke-width="2" style="stroke:var(--ink-soft)"></path>
@@ -463,8 +463,8 @@ debug1: Reading configuration data ...
   [OK] recap-autor        .recap-autor no fecho (1)
   [OK] next-action        .next-action no fecho (1)
   [OK] cards              <script id="cards-2"> presente (1)
-  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
-  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se opcional presente (1 pergunta)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operaçêo)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigaçêo nêo se aplica); teste-se opcional presente (1 pergunta)
 -->
 </section>
 <!-- ============================================================ -->
@@ -536,13 +536,13 @@ sudo apt update &amp;&amp; sudo apt upgrade -y</pre></div>
 <p class="termdemo-k">correct command</p>
 <pre class="termdemo-in">$ sudo apt update &amp;&amp; sudo apt upgrade -y</pre>
 <pre class="termdemo-out">Lendo listas de pacotes... Pronto
-Todos os pacotes estão atualizados.</pre>
+Todos os pacotes estêo atualizados.</pre>
 </div>
 <div class="termdemo-cmd" data-variant="erro">
 <p class="termdemo-k">common error</p>
 <pre class="termdemo-in">$ apt update</pre>
 <pre class="termdemo-out termdemo-err">Permission denied (você precisa de privilégio de administrador)
-E: Não é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</pre>
+E: Nêo é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
@@ -551,7 +551,7 @@ E: Não é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</p
 <div class="quiz" data-answer="b">
 <p class="qk">Test yourself</p><p class="q">Do you need to run the update command every time you log in to the VPS?</p>
 <button class="opt" data-k="a">Yes, it’s required for every connection.</button>
-<button class="opt" data-fb="É manutenção periódica (por exemplo, mensal), não uma etapa obrigatória de cada conexão — como atualizar o celular de vez em quando." data-k="b">No, it’s periodic maintenance, not something you have to do every time you log in.</button>
+<button class="opt" data-fb="É manutençêo periódica (por exemplo, mensal), nêo uma etapa obrigatória de cada conexêo — como atualizar o celular de vez em quando." data-k="b">No, it’s periodic maintenance, not something you have to do every time you log in.</button>
 <p class="qfb"></p>
 </div>
 <button class="readbtn" data-read="s3">mark as read</button>
@@ -615,13 +615,13 @@ automacao_whatsapp  config.json  logs</pre>
 <p class="termdemo-k">correct command</p>
 <pre class="termdemo-in">$ sudo apt update &amp;&amp; sudo apt upgrade -y</pre>
 <pre class="termdemo-out">Lendo listas de pacotes... Pronto
-Todos os pacotes estão atualizados.</pre>
+Todos os pacotes estêo atualizados.</pre>
 </div>
 <div class="termdemo-cmd" data-variant="erro">
 <p class="termdemo-k">common error</p>
 <pre class="termdemo-in">$ apt update</pre>
 <pre class="termdemo-out termdemo-err">Permission denied (você precisa de privilégio de administrador)
-E: Não é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</pre>
+E: Nêo é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
@@ -675,8 +675,8 @@ E: Não é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</p
   [OK] recap-autor        .recap-autor no fecho (1)
   [OK] next-action        .next-action no fecho (1)
   [OK] cards              <script id="cards-3"> presente (1)
-  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
-  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se opcional presente (1 pergunta)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operaçêo)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigaçêo nêo se aplica); teste-se opcional presente (1 pergunta)
 -->
 </section>
 <!-- ============================================================ -->
@@ -821,7 +821,7 @@ E: Não é possível abrir o arquivo de trava — esqueceu o "sudo" na frente</p
   [OK] recap-autor        .recap-autor no fecho (1)
   [OK] next-action        .next-action no fecho (1)
   [OK] cards              <script id="cards-4"> presente (1)
-  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operaçêo)
   [OK] teste-se-FUND      tipo=FUNDAMENTO: presente (1 quiz data-fb)
 -->
 </section>
@@ -906,7 +906,7 @@ dir $env:USERPROFILE\.ssh</pre></div>
 <rect height="70" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="80" x="20" y="60"></rect>
 <rect height="70" rx="8" stroke-width="2" style="stroke:var(--accent)" width="80" x="120" y="60"></rect>
 </svg></div>
-<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; um comando de PowerShell, digitado dentro do CMD, não é reconhecido" data-fig="2"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; um comando de PowerShell, digitado dentro do CMD, nêo é reconhecido" data-fig="2"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
 <rect height="50" rx="8" stroke-width="2" style="stroke:var(--ink-soft)" width="140" x="40" y="70"></rect>
 <path d="M60 95 L160 95" stroke-dasharray="4 3" stroke-width="2" style="stroke:var(--warm)"></path>
 </svg></div>
@@ -961,8 +961,8 @@ dir $env:USERPROFILE\.ssh</pre></div>
   [OK] recap-autor        .recap-autor no fecho (1)
   [OK] next-action        .next-action no fecho (1)
   [OK] cards              <script id="cards-5"> presente (1)
-  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
-  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se não presente nesta aula
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operaçêo)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigaçêo nêo se aplica); teste-se nêo presente nesta aula
 -->
 </section>
 <!-- ============================================================ -->
@@ -1003,7 +1003,7 @@ dir $env:USERPROFILE\.ssh</pre></div>
 <div class="termdemo-cmd" data-variant="erro">
 <p class="termdemo-k">common error</p>
 <pre class="termdemo-in">$ type %USERPROFILE%\.ssh\minha_vps.pub</pre>
-<pre class="termdemo-out termdemo-err">O sistema não pode encontrar o arquivo especificado.
+<pre class="termdemo-out termdemo-err">O sistema nêo pode encontrar o arquivo especificado.
 (nome de arquivo errado — confira o nome exato com dir antes)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
@@ -1100,7 +1100,7 @@ Overwrite (y/n)?
 <div class="termdemo-cmd" data-variant="erro">
 <p class="termdemo-k">common error</p>
 <pre class="termdemo-in">$ type %USERPROFILE%\.ssh\minha_vps.pub</pre>
-<pre class="termdemo-out termdemo-err">O sistema não pode encontrar o arquivo especificado.
+<pre class="termdemo-out termdemo-err">O sistema nêo pode encontrar o arquivo especificado.
 (nome de arquivo errado — confira o nome exato com dir antes)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
@@ -1131,7 +1131,7 @@ Overwrite (y/n)?
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
 </div>
-<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; toda criação gera exatamente 2 arquivos: 1 privado + 1 público" data-fig="4"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; toda criaçêo gera exatamente 2 arquivos: 1 privado + 1 público" data-fig="4"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
 <rect height="40" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="55" x="40" y="80"></rect>
 <rect height="40" rx="6" stroke-width="2" style="stroke:var(--accent)" width="55" x="125" y="80"></rect>
 </svg></div>
@@ -1178,12 +1178,12 @@ Overwrite (y/n)?
   [OK] recap-autor        .recap-autor no fecho (1)
   [OK] next-action        .next-action no fecho (1)
   [OK] cards              <script id="cards-6"> presente (1)
-  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
-  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se opcional presente (1 pergunta)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operaçêo)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigaçêo nêo se aplica); teste-se opcional presente (1 pergunta)
 -->
 </section>
 <!-- ============================================================ -->
-<!-- ===== AULA 7 — PRATICA/INTEGRAÇÃO ===== -->
+<!-- ===== AULA 7 — PRATICA/INTEGRAÇêO ===== -->
 <!-- ============================================================ -->
 <section class="view" data-aula="7" data-tempo="21min" id="v-aula-7">
 <header class="hero"><div class="hero-inner">
@@ -1210,7 +1210,7 @@ Overwrite (y/n)?
 <p class="mk">Marta has already run <code>ssh-keygen</code> and has <code>minha_vps</code> e <code>minha_vps.pub</code>. She follows the steps below once, and the next time she needs to check the WhatsApp automation, she gets in without typing anything but the command. Ricardo follows the exact same sequence on the store's VPS, changing only the IP and key name.</p>
 <button class="readbtn" data-read="s1">mark as read</button>
 </section>
-<section class="step" data-fig="2" data-kind="ferramenta" data-versao="Ubuntu/Debian, nano padrão">
+<section class="step" data-fig="2" data-kind="ferramenta" data-versao="Ubuntu/Debian, nano padrêo">
 <h2><span class="n">02</span> Creating the right place inside the VPS</h2>
 <p>First, view your public key on your computer (<code>type %USERPROFILE%\.ssh\minha_vps.pub</code>) and copy the entire text. Then, log in to the VPS with a password (lesson 2) and create the folder and file that store the authorized keys inside it:</p>
 <div class="pcodewrap"><button class="pcopy" type="button">copy</button><pre class="pcode">mkdir -p ~/.ssh
@@ -1233,7 +1233,7 @@ nano ~/.ssh/authorized_keys</pre></div>
 <p class="termdemo-k">command</p>
 <pre class="termdemo-in">$ mkdir -p ~/.ssh
 $ nano ~/.ssh/authorized_keys</pre>
-<pre class="termdemo-out">(o nano abre uma tela de edição — cole a chave, CTRL+O, Enter, CTRL+X)</pre>
+<pre class="termdemo-out">(o nano abre uma tela de ediçêo — cole a chave, CTRL+O, Enter, CTRL+X)</pre>
 </div>
 </div>
 </div>
@@ -1242,7 +1242,7 @@ $ nano ~/.ssh/authorized_keys</pre>
 </section>
 <section class="step" data-fig="3" data-kind="ferramenta" data-versao="Ubuntu/Debian">
 <h2><span class="n">03</span> Setting permissions</h2>
-<p>O <span class="gterm" data-def="Regras que dizem quem pode ler, escrever ou executar um arquivo ou pasta dentro do Linux. Números como 700 e 600 são códigos pra essas regras." tabindex="0">permissions</span> of the folder and file must be correct, or the VPS will ignore the key for security. Still inside the VPS, run:</p>
+<p>O <span class="gterm" data-def="Regras que dizem quem pode ler, escrever ou executar um arquivo ou pasta dentro do Linux. Números como 700 e 600 sêo códigos pra essas regras." tabindex="0">permissions</span> of the folder and file must be correct, or the VPS will ignore the key for security. Still inside the VPS, run:</p>
 <div class="pcodewrap"><button class="pcopy" type="button">copy</button><pre class="pcode">chmod 700 ~/.ssh
 chmod 600 ~/.ssh/authorized_keys</pre></div>
 <p>Ricardo forgot this step on his first try, and his key simply didn’t work — with no clear error message. After adjusting the permissions, it worked on the first try.</p>
@@ -1261,7 +1261,7 @@ $ chmod 600 ~/.ssh/authorized_keys</pre>
 <pre class="termdemo-in">$ ssh -i minha_vps root@IP_DA_VPS
 (pulando o chmod)</pre>
 <pre class="termdemo-out termdemo-err">root@IP: Permission denied (publickey,password).
-(a VPS recusa a chave porque as permissões da pasta .ssh estão abertas demais)</pre>
+(a VPS recusa a chave porque as permissões da pasta .ssh estêo abertas demais)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
@@ -1298,7 +1298,7 @@ root@vps:~#</pre>
 <p class="termdemo-k">common error</p>
 <pre class="termdemo-in">$ ssh -i %USERPROFILE%\.ssh\minha_vps root@123.123.123.123</pre>
 <pre class="termdemo-out termdemo-err">root@123.123.123.123's password:
-(ainda pediu senha — a chave não foi aceita: revise o authorized_keys e o chmod)</pre>
+(ainda pediu senha — a chave nêo foi aceita: revise o authorized_keys e o chmod)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
@@ -1342,11 +1342,11 @@ ssh -i %USERPROFILE%\.ssh\minha_vps usuario@IP_DA_VPS</pre></div>
 <p class="termdemo-k">command</p>
 <pre class="termdemo-in">$ mkdir -p ~/.ssh
 $ nano ~/.ssh/authorized_keys</pre>
-<pre class="termdemo-out">(o nano abre uma tela de edição — cole a chave, CTRL+O, Enter, CTRL+X)</pre>
+<pre class="termdemo-out">(o nano abre uma tela de ediçêo — cole a chave, CTRL+O, Enter, CTRL+X)</pre>
 </div>
 </div>
 </div>
-<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; chmod não mostra nada quando dá certo — o silêncio é o sinal de sucesso" data-fig="3">
+<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; chmod nêo mostra nada quando dá certo — o silêncio é o sinal de sucesso" data-fig="3">
 <button class="termdemo-reveal" type="button">see what happens →</button>
 <div class="termdemo-body" hidden="">
 <div class="termdemo-cmd on" data-variant="ok">
@@ -1360,12 +1360,12 @@ $ chmod 600 ~/.ssh/authorized_keys</pre>
 <pre class="termdemo-in">$ ssh -i minha_vps root@IP_DA_VPS
 (pulando o chmod)</pre>
 <pre class="termdemo-out termdemo-err">root@IP: Permission denied (publickey,password).
-(a VPS recusa a chave porque as permissões da pasta .ssh estão abertas demais)</pre>
+(a VPS recusa a chave porque as permissões da pasta .ssh estêo abertas demais)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
 </div>
-<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; com a chave certa, não aparece nenhum pedido de senha" data-fig="4">
+<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; com a chave certa, nêo aparece nenhum pedido de senha" data-fig="4">
 <button class="termdemo-reveal" type="button">see what happens →</button>
 <div class="termdemo-body" hidden="">
 <div class="termdemo-cmd on" data-variant="ok">
@@ -1378,7 +1378,7 @@ root@vps:~#</pre>
 <p class="termdemo-k">common error</p>
 <pre class="termdemo-in">$ ssh -i %USERPROFILE%\.ssh\minha_vps root@123.123.123.123</pre>
 <pre class="termdemo-out termdemo-err">root@123.123.123.123's password:
-(ainda pediu senha — a chave não foi aceita: revise o authorized_keys e o chmod)</pre>
+(ainda pediu senha — a chave nêo foi aceita: revise o authorized_keys e o chmod)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
@@ -1425,8 +1425,8 @@ root@vps:~#</pre>
   [OK] recap-autor        .recap-autor no fecho (1)
   [OK] next-action        .next-action no fecho (1)
   [OK] cards              <script id="cards-7"> presente (1)
-  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
-  [N/A] teste-se-FUND     aula é PRATICA (obrigação não se aplica); teste-se opcional presente (1 pergunta)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operaçêo)
+  [N/A] teste-se-FUND     aula é PRATICA (obrigaçêo nêo se aplica); teste-se opcional presente (1 pergunta)
 -->
 </section>
 <!-- ============================================================ -->
@@ -1481,7 +1481,7 @@ root@vps:~#</pre>
 <p class="termdemo-k">common error</p>
 <pre class="termdemo-in">$ ssh hostinger</pre>
 <pre class="termdemo-out termdemo-err">ssh: Could not resolve hostname hostinger: Name or service not known
-(o arquivo config existe, mas as linhas abaixo de "Host" não estavam recuadas)</pre>
+(o arquivo config existe, mas as linhas abaixo de "Host" nêo estavam recuadas)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
@@ -1494,7 +1494,7 @@ root@vps:~#</pre>
 <p><code>Host</code> is the nickname you choose (the name you’ll type). <code>HostName</code> is the VPS’s real IP address. <code>User</code> is the user. <code>IdentityFile</code> points to the private key that should be used.</p>
 <div class="quiz" data-answer="a">
 <p class="qk">Test yourself</p><p class="q">In Ricardo’s example, which line does he need to change to point to the key he created in lesson 6?</p>
-<button class="opt" data-fb="IdentityFile aponta exatamente pro arquivo da chave privada que deve ser usada nessa conexão." data-k="a">IdentityFile</button>
+<button class="opt" data-fb="IdentityFile aponta exatamente pro arquivo da chave privada que deve ser usada nessa conexêo." data-k="a">IdentityFile</button>
 <button class="opt" data-k="b">Host</button>
 <p class="qfb"></p>
 </div>
@@ -1536,7 +1536,7 @@ root@vps:~#</pre>
 <rect height="20" rx="4" stroke-width="2" style="stroke:var(--ink-soft)" width="140" x="40" y="80"></rect>
 <rect height="20" rx="4" stroke-width="2" style="stroke:var(--ink-soft)" width="140" x="40" y="110"></rect>
 </svg></div>
-<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; config bem recuado conecta pelo apelido; mal recuado, não reconhece o host" data-fig="2">
+<div class="fig termdemo" data-cap="&lt;b&gt;Fig.&lt;/b&gt; config bem recuado conecta pelo apelido; mal recuado, nêo reconhece o host" data-fig="2">
 <button class="termdemo-reveal" type="button">see what happens →</button>
 <div class="termdemo-body" hidden="">
 <div class="termdemo-cmd on" data-variant="ok">
@@ -1549,12 +1549,12 @@ root@vps:~#</pre>
 <p class="termdemo-k">common error</p>
 <pre class="termdemo-in">$ ssh hostinger</pre>
 <pre class="termdemo-out termdemo-err">ssh: Could not resolve hostname hostinger: Name or service not known
-(o arquivo config existe, mas as linhas abaixo de "Host" não estavam recuadas)</pre>
+(o arquivo config existe, mas as linhas abaixo de "Host" nêo estavam recuadas)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
 </div>
-<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; cada linha aponta pra um dado diferente da conexão" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; cada linha aponta pra um dado diferente da conexêo" data-fig="3"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
 <rect height="30" rx="6" stroke-width="2" style="stroke:var(--accent)" width="60" x="30" y="40"></rect>
 <rect height="30" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="60" x="30" y="85"></rect>
 <rect height="30" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="60" x="30" y="130"></rect>
@@ -1606,8 +1606,8 @@ root@vps:~#</pre>
   [OK] recap-autor        .recap-autor no fecho (1)
   [OK] next-action        .next-action no fecho (1)
   [OK] cards              <script id="cards-8"> presente (1)
-  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
-  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se opcional presente (1 pergunta)
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operaçêo)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigaçêo nêo se aplica); teste-se opcional presente (1 pergunta)
 -->
 </section>
 <!-- ============================================================ -->
@@ -1683,7 +1683,7 @@ sudo systemctl start ssh</pre></div>
 <p class="termdemo-k">common error</p>
 <pre class="termdemo-in">$ systemctl status sshd</pre>
 <pre class="termdemo-out termdemo-err">Unit sshd.service could not be found.
-(neste sistema o serviço se chama "ssh", não "sshd" — tente o outro nome)</pre>
+(neste sistema o serviço se chama "ssh", nêo "sshd" — tente o outro nome)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
@@ -1710,11 +1710,11 @@ sudo systemctl start ssh</pre></div>
 </div>
 <aside class="rail"><div class="railsticky">
 <div class="figstage">
-<div class="fig on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; toda falha de SSH vem com uma mensagem — ela é a pista, não um beco sem saída" data-fig="1"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<div class="fig on" data-cap="&lt;b&gt;Fig.&lt;/b&gt; toda falha de SSH vem com uma mensagem — ela é a pista, nêo um beco sem saída" data-fig="1"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
 <rect height="60" rx="10" stroke-width="2" style="stroke:var(--warm)" width="120" x="50" y="70"></rect>
 <path d="M70 100 L150 100" stroke-width="2" style="stroke:var(--ink-soft)"></path>
 </svg></div>
-<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; Permission denied: a conexão chegou, mas a autenticação foi recusada" data-fig="2"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
+<div class="fig" data-cap="&lt;b&gt;Fig.&lt;/b&gt; Permission denied: a conexêo chegou, mas a autenticaçêo foi recusada" data-fig="2"><svg aria-hidden="true" fill="none" viewbox="0 0 220 200">
 <rect height="40" rx="6" stroke-width="2" style="stroke:var(--ink-soft)" width="70" x="30" y="80"></rect>
 <rect height="40" rx="6" stroke-width="2" style="stroke:var(--warm)" width="50" x="140" y="80"></rect>
 <path d="M100 100 L138 100" stroke-width="2" style="stroke:var(--warm)"></path>
@@ -1736,7 +1736,7 @@ sudo systemctl start ssh</pre></div>
 <p class="termdemo-k">common error</p>
 <pre class="termdemo-in">$ systemctl status sshd</pre>
 <pre class="termdemo-out termdemo-err">Unit sshd.service could not be found.
-(neste sistema o serviço se chama "ssh", não "sshd" — tente o outro nome)</pre>
+(neste sistema o serviço se chama "ssh", nêo "sshd" — tente o outro nome)</pre>
 </div>
 <button class="termdemo-toggle" type="button">see the common error</button>
 </div>
@@ -1784,8 +1784,8 @@ sudo systemctl start ssh</pre></div>
   [OK] recap-autor        .recap-autor no fecho (1)
   [OK] next-action        .next-action no fecho (1)
   [OK] cards              <script id="cards-9"> presente (1)
-  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operação)
-  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigação não se aplica); teste-se não presente nesta aula
+  [OK] anti-duplicacao    §11.3 — 3 testes passam (substring / forma / operaçêo)
+  [N/A] teste-se-FUND     aula é FERRAMENTA (obrigaçêo nêo se aplica); teste-se nêo presente nesta aula
 -->
 </section>
 <script src="../assets/curso.js"></script>
